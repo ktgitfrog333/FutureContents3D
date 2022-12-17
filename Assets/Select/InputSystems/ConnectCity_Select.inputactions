@@ -1,5 +1,5 @@
 {
-    "name": "ConnectCity_TitleSelect",
+    "name": "ConnectCity_Select",
     "maps": [
         {
             "name": "UI",
@@ -213,7 +213,7 @@
                 {
                     "name": "",
                     "id": "d09f20a0-d58f-471b-a08b-97bcd7b31ac0",
-                    "path": "<Gamepad>/buttonEast",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -235,7 +235,7 @@
                 {
                     "name": "",
                     "id": "651ff0c5-378e-48f0-a07f-2e437e98c20b",
-                    "path": "<Gamepad>/buttonSouth",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",

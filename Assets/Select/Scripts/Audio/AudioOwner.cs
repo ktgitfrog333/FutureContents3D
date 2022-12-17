@@ -58,8 +58,6 @@ namespace Select.Audio
         se_cancel,
         /// <summary>項目の決定</summary>
         se_decided,
-        /// <summary>ゲームスタート</summary>
-        se_game_start,
         /// <summary>ステージセレクト</summary>
         se_select,
     }

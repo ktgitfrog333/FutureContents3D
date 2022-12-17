@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace Select.Model
 {
@@ -11,6 +12,7 @@ namespace Select.Model
     /// ロゴステージ
     /// </summary>
     [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(EventTrigger))]
     public class LogoStageModel : UIEventController
     {
         /// <summary>ステージ番号</summary>
@@ -32,20 +34,8 @@ namespace Select.Model
         }
         /// <summary>ボタン</summary>
         private Button _button;
-
-        private void Reset()
-        {
-            //int idx = 0;
-            //foreach (Transform page in transform.parent.parent)
-            //{
-            //    foreach (Transform logo in page)
-            //    {
-            //        index = idx++;
-            //        if (logo.Equals(transform))
-            //            break;
-            //    }
-            //}
-        }
+        /// <summary>イベントトリガー</summary>
+        private EventTrigger _eventTrigger;
 
         /// <summary>
         /// ボタンのステータスを変更
@@ -59,6 +49,28 @@ namespace Select.Model
                 if (_button == null)
                     _button = GetComponent<Button>();
                 _button.enabled = enabled;
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// イベントトリガーのステータスを変更
+        /// </summary>
+        /// <param name="enabled">有効／無効</param>
+        /// <returns>成功／失敗</returns>
+        public bool SetEventTriggerEnabled(bool enabled)
+        {
+            try
+            {
+                if (_eventTrigger == null)
+                    _eventTrigger = GetComponent<EventTrigger>();
+                _eventTrigger.enabled = enabled;
+
                 return true;
             }
             catch (System.Exception e)

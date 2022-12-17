@@ -20,6 +20,7 @@ namespace Select.Common
             try
             {
                 var tSResources = new SelectTemplateResourcesAccessory();
+                tSResources.Initialize();
                 var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
                 if (datas == null)
                     throw new System.Exception("リソース読み込みの失敗");
@@ -60,7 +61,6 @@ namespace Select.Common
         /// </summary>
         public void LoadTitleScene()
         {
-            //Debug.Log($"遷移先のシーン：{sceneName}");
             SceneManager.LoadScene("TitleScene");
         }
 
@@ -79,7 +79,7 @@ namespace Select.Common
         public void LoadMainScene(int mode)
         {
             if (mode == 1)
-                Debug.Log("Demoモード");
+                Debug.LogWarning("Demoモード");
             SceneManager.LoadScene(mode == 1 ? "DemoMainScene" : "MainScene");
         }
     }

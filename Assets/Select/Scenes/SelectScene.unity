@@ -8516,18 +8516,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1109166696}
     - target: {fileID: 3906211334230722720, guid: 233cb2b8fc460fa43a1047b403d2af36, type: 3}
-      propertyPath: loadMainSceneMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3906211334230722720, guid: 233cb2b8fc460fa43a1047b403d2af36, type: 3}
-      propertyPath: pageViews.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3906211334230722720, guid: 233cb2b8fc460fa43a1047b403d2af36, type: 3}
-      propertyPath: pageModels.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3906211334230722720, guid: 233cb2b8fc460fa43a1047b403d2af36, type: 3}
       propertyPath: pageViews.Array.data[1]
       value: 
       objectReference: {fileID: 1393829899}
@@ -8551,30 +8539,6 @@ PrefabInstance:
       propertyPath: pageModels.Array.data[3]
       value: 
       objectReference: {fileID: 1103795138}
-    - target: {fileID: 3906211334230722720, guid: 233cb2b8fc460fa43a1047b403d2af36, type: 3}
-      propertyPath: logoStageViews.Array.size
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 3906211334230722720, guid: 233cb2b8fc460fa43a1047b403d2af36, type: 3}
-      propertyPath: logoCursorViews.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3906211334230722720, guid: 233cb2b8fc460fa43a1047b403d2af36, type: 3}
-      propertyPath: logoStageModels.Array.size
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 3906211334230722720, guid: 233cb2b8fc460fa43a1047b403d2af36, type: 3}
-      propertyPath: commentTextViews.Array.size
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 3906211334230722720, guid: 233cb2b8fc460fa43a1047b403d2af36, type: 3}
-      propertyPath: logoCursorModels.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3906211334230722720, guid: 233cb2b8fc460fa43a1047b403d2af36, type: 3}
-      propertyPath: commentTextModels.Array.size
-      value: 16
-      objectReference: {fileID: 0}
     - target: {fileID: 3906211334230722720, guid: 233cb2b8fc460fa43a1047b403d2af36, type: 3}
       propertyPath: logoStageViews.Array.data[1]
       value: 

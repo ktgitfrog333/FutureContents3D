@@ -111,7 +111,10 @@ namespace Select.Presenter
             // 初期設定
             foreach (var child in logoStageModels)
                 if (child != null)
+                {
                     child.SetButtonEnabled(false);
+                    child.SetEventTriggerEnabled(false);
+                }
             foreach (var child in pageViews)
                 if (child != null)
                     child.SetVisible(false);
@@ -123,7 +126,10 @@ namespace Select.Presenter
                     // UI操作を許可
                     foreach (var child in logoStageModels)
                         if (child != null)
+                        {
                             child.SetButtonEnabled(true);
+                            child.SetEventTriggerEnabled(true);
+                        }
                     // BGMを再生
                     SelectGameManager.Instance.AudioOwner.PlayBGM(ClipToPlayBGM.bgm_select);
                 })
@@ -135,7 +141,6 @@ namespace Select.Presenter
             logoStageModels[stageIndex.Value].SetSelectedGameObject();
             // 選択ステージ番号の更新
             stageIndex.ObserveEveryValueChanged(x => x.Value)
-                .Do(x => Debug.Log(x))
                 .Subscribe(x =>
                 {
                     // ページ表示切り替え
@@ -187,36 +192,56 @@ namespace Select.Presenter
                         switch ((EnumEventCommand)x)
                         {
                             case EnumEventCommand.Selected:
-                                // T.B.D 選択SEを再生
+                                // 選択SEを再生
+                                SelectGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
                                 stageIndex.Value = child.Index;
                                 break;
-                            case EnumEventCommand.Submited:
-                                // T.B.D 決定SEを再生
-                                // メインシーンへの遷移
-                                var sceneOwner = SelectGameManager.Instance.SceneOwner;
-                                sysCommonCash[EnumSystemCommonCash.SceneId] = x;
-                                if (!sceneOwner.SetSystemCommonCash(sysCommonCash))
-                                    Debug.LogError("シーンID更新処理呼び出しの失敗");
+                            case EnumEventCommand.Canceled:
+                                // キャンセルSEを再生
+                                SelectGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_cancel);
+                                // タイトルシーンへの遷移
                                 // UI操作を許可しない
                                 foreach (var child in logoStageModels)
                                     if (child != null)
+                                    {
                                         child.SetButtonEnabled(false);
+                                        child.SetEventTriggerEnabled(false);
+                                    }
                                 // シーン読み込み時のアニメーション
                                 Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
                                     .Subscribe(_ =>
                                     {
-                                        // ひとまずデモ呼び出し
-                                        sceneOwner.LoadMainScene(loadMainSceneMode);
+                                        SelectGameManager.Instance.SceneOwner.LoadTitleScene();
                                     })
                                     .AddTo(gameObject);
 
                                 break;
-                            case EnumEventCommand.Canceled:
-                                // T.B.D キャンセルSEを再生
-                                // T.B.D タイトルシーンへの遷移
+                            case EnumEventCommand.Submited:
+                                // 決定SEを再生
+                                SelectGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
+                                // メインシーンへの遷移
+                                sysCommonCash[EnumSystemCommonCash.SceneId] = child.Index;
+                                if (!SelectGameManager.Instance.SceneOwner.SetSystemCommonCash(sysCommonCash))
+                                    Debug.LogError("シーンID更新処理呼び出しの失敗");
+                                // UI操作を許可しない
+                                foreach (var child in logoStageModels)
+                                    if (child != null)
+                                    {
+                                        child.SetButtonEnabled(false);
+                                        child.SetEventTriggerEnabled(false);
+                                    }
+                                // シーン読み込み時のアニメーション
+                                Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                                    .Subscribe(_ =>
+                                    {
+                                        // T.B.D メインシーンを実装
+                                        SelectGameManager.Instance.SceneOwner.LoadMainScene(loadMainSceneMode);
+                                    })
+                                    .AddTo(gameObject);
+
                                 break;
                             default:
-                                Debug.LogWarning("例外ケース");
+                                //Debug.LogWarning("例外ケース");
                                 break;
                         }
                     });

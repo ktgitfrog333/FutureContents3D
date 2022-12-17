@@ -119,16 +119,20 @@ namespace Title.Presenter
                     {
                         // ボタン制御を無効
                         gameStartLogoModel.SetButtonEnabled(false);
+                        gameStartLogoModel.SetEventTriggerEnabled(false);
                         gameExitLogoModel.SetButtonEnabled(false);
                         gameExitConfirmYesLogoModel.SetButtonEnabled(false);
+                        gameExitConfirmYesLogoModel.SetEventTriggerEnabled(false);
                         gameExitConfirmNoLogoModel.SetButtonEnabled(false);
                     }
                     else
                     {
                         // ボタン制御を有効
                         gameStartLogoModel.SetButtonEnabled(true);
+                        gameStartLogoModel.SetEventTriggerEnabled(true);
                         gameExitLogoModel.SetButtonEnabled(true);
                         gameExitConfirmYesLogoModel.SetButtonEnabled(true);
+                        gameExitConfirmYesLogoModel.SetEventTriggerEnabled(true);
                         gameExitConfirmNoLogoModel.SetButtonEnabled(true);
                     }
                 });
@@ -153,6 +157,7 @@ namespace Title.Presenter
                             break;
                         case EnumEventCommand.Submited:
                             gameStartLogoModel.SetButtonEnabled(false);
+                            gameStartLogoModel.SetEventTriggerEnabled(false);
                             // 決定SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
                             // ステージセレクトへの遷移を実装
@@ -219,6 +224,7 @@ namespace Title.Presenter
                             break;
                         case EnumEventCommand.Submited:
                             gameExitConfirmYesLogoModel.SetButtonEnabled(false);
+                            gameExitConfirmYesLogoModel.SetEventTriggerEnabled(false);
                             // 決定SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
                             Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
@@ -259,7 +265,7 @@ namespace Title.Presenter
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_cancel);
                             break;
                         default:
-                            Debug.LogWarning("例外ケース");
+                            //Debug.LogWarning("例外ケース");
                             break;
                     }
                 });

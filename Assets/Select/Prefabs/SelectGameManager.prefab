@@ -191,7 +191,6 @@ MonoBehaviour:
   clip:
   - {fileID: 8300000, guid: 4b47b81b4475adc419a350e4f3504761, type: 3}
   - {fileID: 8300000, guid: 275bf6e4c4dee2640be52d3acf36e2ca, type: 3}
-  - {fileID: 8300000, guid: 6f1bf387df68d714599410b3698b520e, type: 3}
   - {fileID: 8300000, guid: 737b00ba08b9cc741b92d8462772a601, type: 3}
   sFXChannelPrefab: {fileID: 1821450510366777210, guid: 30db7f105e85d394bab9cb571ca4fc18, type: 3}
 --- !u!1 &3906211334230722722
@@ -238,6 +237,95 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b007aab9e40d4a40a3803edace9411a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pageViews:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  pageModels:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  logoStageViews:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  logoStageModels:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  logoCursorViews:
+  - {fileID: 0}
+  - {fileID: 0}
+  logoCursorModels:
+  - {fileID: 0}
+  - {fileID: 0}
+  commentTextViews:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  commentTextModels:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  fadeImageView: {fileID: 0}
+  fadeImageModel: {fileID: 0}
+  contentsCountInPage: 5
+  selectStageFrame: {fileID: 0}
+  loadMainSceneMode: 1
 --- !u!1 &3906211334646022044
 GameObject:
   m_ObjectHideFlags: 0
