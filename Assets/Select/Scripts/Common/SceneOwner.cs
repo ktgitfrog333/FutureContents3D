@@ -11,6 +11,11 @@ namespace Select.Common
     /// </summary>
     public class SceneOwner : MonoBehaviour
     {
+        /// <summary>次のシーン名</summary>
+        [SerializeField] private string nextSceneName = "MainScene";
+        /// <summary>前のシーン名</summary>
+        [SerializeField] private string backSceneName = "TitleScene";
+
         /// <summary>
         /// シーンIDを取得
         /// </summary>
@@ -61,7 +66,7 @@ namespace Select.Common
         /// </summary>
         public void LoadTitleScene()
         {
-            SceneManager.LoadScene("TitleScene");
+            SceneManager.LoadScene(backSceneName);
         }
 
         /// <summary>
@@ -69,18 +74,7 @@ namespace Select.Common
         /// </summary>
         public void LoadMainScene()
         {
-            LoadMainScene(0);
-        }
-
-        /// <summary>
-        /// メインシーンをロード
-        /// </summary>
-        /// <param name="sceneName">ロードするモード（1はデモ。それ以外はデフォルト）</param>
-        public void LoadMainScene(int mode)
-        {
-            if (mode == 1)
-                Debug.LogWarning("Demoモード");
-            SceneManager.LoadScene(mode == 1 ? "DemoMainScene" : "MainScene");
+            SceneManager.LoadScene(nextSceneName);
         }
     }
 }

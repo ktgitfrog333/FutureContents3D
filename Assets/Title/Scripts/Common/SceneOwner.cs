@@ -10,13 +10,16 @@ namespace Title.Common
     /// </summary>
     public class SceneOwner : MonoBehaviour
     {
+        /// <summary>次のシーン名</summary>
+        [SerializeField] private string nextSceneName = "SelectScene";
+
         /// <summary>
         /// シーン読み込み
         /// </summary>
         /// <param name="name">シーン名</param>
-        public void LoadSceneName(string name)
+        public void LoadNextScene()
         {
-            SceneManager.LoadScene(name);
+            SceneManager.LoadScene(nextSceneName);
         }
     }
 }

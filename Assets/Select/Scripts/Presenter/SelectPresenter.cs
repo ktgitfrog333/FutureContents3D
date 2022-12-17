@@ -41,8 +41,6 @@ namespace Select.Presenter
         [SerializeField] private int contentsCountInPage = 5;
         /// <summary>ステージ選択のフレーム</summary>
         [SerializeField] private Transform selectStageFrame;
-        /// <summary>メインシーンロードモード</summary>
-        [SerializeField, Range(0, 1)] private int loadMainSceneMode = 0;
 
         private void Reset()
         {
@@ -235,7 +233,7 @@ namespace Select.Presenter
                                     .Subscribe(_ =>
                                     {
                                         // T.B.D メインシーンを実装
-                                        SelectGameManager.Instance.SceneOwner.LoadMainScene(loadMainSceneMode);
+                                        SelectGameManager.Instance.SceneOwner.LoadMainScene();
                                     })
                                     .AddTo(gameObject);
 

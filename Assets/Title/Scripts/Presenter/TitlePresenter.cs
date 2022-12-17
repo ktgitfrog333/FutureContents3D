@@ -162,7 +162,7 @@ namespace Title.Presenter
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
                             // ステージセレクトへの遷移を実装
                             Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
-                                .Subscribe(_ => TitleGameManager.Instance.SceneOwner.LoadSceneName("SelectScene"))
+                                .Subscribe(_ => TitleGameManager.Instance.SceneOwner.LoadNextScene())
                                 .AddTo(gameObject);
                             break;
                         default:

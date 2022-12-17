@@ -325,7 +325,6 @@ MonoBehaviour:
   fadeImageModel: {fileID: 0}
   contentsCountInPage: 5
   selectStageFrame: {fileID: 0}
-  loadMainSceneMode: 1
 --- !u!1 &3906211334646022044
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,6 +369,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba9f1a3ea630f34ca7ffeaa0a8c4f2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nextSceneName: MainScene
+  backSceneName: TitleScene
 --- !u!1 &3906211334697514266
 GameObject:
   m_ObjectHideFlags: 0
