@@ -8,6 +8,6 @@
 ### [DOTween(HOTween v2)](https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676)
 ### [UniRx](https://kingmo.jp/kumonos/unirx-unitask-upm-import/)
 ## 初期手順
-### InputSystemのインストール
-### [DOTweenの導入](https://qiita.com/broken55/items/df152c061da759ad1471)
-### UniRxの導入
+### ~~InputSystemのインストール~~（※不要？）
+### ~~[DOTweenの導入](https://qiita.com/broken55/items/df152c061da759ad1471)~~（※不要？）
+### ~~UniRxの導入~~（※不要？）
