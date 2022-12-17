@@ -41,6 +41,8 @@ namespace Select.Presenter
         [SerializeField] private int contentsCountInPage = 5;
         /// <summary>ステージ選択のフレーム</summary>
         [SerializeField] private Transform selectStageFrame;
+        /// <summary>メインシーンロードモード</summary>
+        [SerializeField, Range(0, 1)] private int loadMainSceneMode = 0;
 
         private void Reset()
         {
@@ -127,11 +129,13 @@ namespace Select.Presenter
                 })
                 .AddTo(gameObject);
 
-            // T.B.D ステージ番号を取得する処理を追加する
-            var stageIndex = new IntReactiveProperty(1);
-            logoStageModels[1].SetSelectedGameObject();
+            // ステージ番号を取得する処理を追加する
+            var sysCommonCash = SelectGameManager.Instance.SceneOwner.GetSystemCommonCash();
+            var stageIndex = new IntReactiveProperty(sysCommonCash[EnumSystemCommonCash.SceneId]);
+            logoStageModels[stageIndex.Value].SetSelectedGameObject();
             // 選択ステージ番号の更新
             stageIndex.ObserveEveryValueChanged(x => x.Value)
+                .Do(x => Debug.Log(x))
                 .Subscribe(x =>
                 {
                     // ページ表示切り替え
@@ -183,12 +187,32 @@ namespace Select.Presenter
                         switch ((EnumEventCommand)x)
                         {
                             case EnumEventCommand.Selected:
+                                // T.B.D 選択SEを再生
                                 stageIndex.Value = child.Index;
                                 break;
                             case EnumEventCommand.Submited:
-                                // T.B.D メインシーンへの遷移
+                                // T.B.D 決定SEを再生
+                                // メインシーンへの遷移
+                                var sceneOwner = SelectGameManager.Instance.SceneOwner;
+                                sysCommonCash[EnumSystemCommonCash.SceneId] = x;
+                                if (!sceneOwner.SetSystemCommonCash(sysCommonCash))
+                                    Debug.LogError("シーンID更新処理呼び出しの失敗");
+                                // UI操作を許可しない
+                                foreach (var child in logoStageModels)
+                                    if (child != null)
+                                        child.SetButtonEnabled(false);
+                                // シーン読み込み時のアニメーション
+                                Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                                    .Subscribe(_ =>
+                                    {
+                                        // ひとまずデモ呼び出し
+                                        sceneOwner.LoadMainScene(loadMainSceneMode);
+                                    })
+                                    .AddTo(gameObject);
+
                                 break;
                             case EnumEventCommand.Canceled:
+                                // T.B.D キャンセルSEを再生
                                 // T.B.D タイトルシーンへの遷移
                                 break;
                             default:

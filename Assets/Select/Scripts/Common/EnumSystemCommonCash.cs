@@ -9,13 +9,7 @@ namespace Select.Common
     /// </summary>
     public enum EnumSystemCommonCash
     {
-        /// <summary>オーディオ音量</summary>
-        AudioVolumeIndex,
-        /// <summary>BGM音量</summary>
-        BGMVolumeIndex,
-        /// <summary>SE音量</summary>
-        SEVolumeIndex,
-        /// <summary>振動のオンオフ</summary>
-        VibrationEnableIndex,
+        /// <summary>シーンID</summary>
+        SceneId,
     }
 }
