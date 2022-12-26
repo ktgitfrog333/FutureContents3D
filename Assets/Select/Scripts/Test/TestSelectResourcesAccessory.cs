@@ -8,7 +8,7 @@ namespace Select.Test
 {
     /// <summary>
     /// テスト用
-    /// タイトルシーンのリソース管理
+    /// セレクトシーンのリソース管理
     /// </summary>
     public class TestSelectResourcesAccessory : MonoBehaviour
     {

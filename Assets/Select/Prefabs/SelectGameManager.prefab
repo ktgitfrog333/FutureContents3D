@@ -476,7 +476,7 @@ GameObject:
   - component: {fileID: 3906211335122895824}
   - component: {fileID: 3906211335122895825}
   m_Layer: 0
-  m_Name: CursolVisible
+  m_Name: CursorVisible
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -561,4 +561,4 @@ MonoBehaviour:
   presenter: {fileID: 3906211334230722720}
   audioOwner: {fileID: 3906211335030263027}
   sceneOwner: {fileID: 3906211334646022042}
-  cursolVisible: {fileID: 3906211335122895825}
+  cursorVisible: {fileID: 3906211335122895825}

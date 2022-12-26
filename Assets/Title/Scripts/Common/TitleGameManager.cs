@@ -28,16 +28,16 @@ namespace Title.Common
         /// <summary>シーンオーナー</summary>
         public SceneOwner SceneOwner => sceneOwner;
         /// <summary>カーソル表示</summary>
-        [SerializeField] private CursolVisible cursolVisible;
+        [SerializeField] private CursorVisible cursorVisible;
         /// <summary>カーソル表示</summary>
-        public CursolVisible CursolVisible => cursolVisible;
+        public CursorVisible CursorVisible => cursorVisible;
 
         private void Reset()
         {
             presenter = GameObject.Find("Presenter").GetComponent<TitlePresenter>();
             audioOwner = GameObject.Find("AudioOwner").GetComponent<AudioOwner>();
             sceneOwner = GameObject.Find("SceneOwner").GetComponent<SceneOwner>();
-            cursolVisible = GameObject.Find("CursolVisible").GetComponent<CursolVisible>();
+            cursorVisible = GameObject.Find("CursorVisible").GetComponent<CursorVisible>();
         }
 
         private void Awake()
@@ -50,7 +50,7 @@ namespace Title.Common
         {
             audioOwner.OnStart();
             presenter.OnStart();
-            cursolVisible.OnStart();
+            cursorVisible.OnStart();
         }
 
         /// <summary>

@@ -355,9 +355,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7767494464080056551}
-  - component: {fileID: 8688981623080902697}
+  - component: {fileID: 2159880400407566207}
   m_Layer: 0
-  m_Name: CursolVisible
+  m_Name: CursorVisible
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -378,7 +378,7 @@ Transform:
   m_Father: {fileID: 2159880399094193812}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8688981623080902697
+--- !u!114 &2159880400407566207
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -387,7 +387,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 881095731509313837}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6a79e8ed9f21754095680d30a019d83, type: 3}
+  m_Script: {fileID: 11500000, guid: ee073796f03c0104cac44f5b0497bc6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   defaultVisible: 0
@@ -487,4 +487,4 @@ MonoBehaviour:
   presenter: {fileID: 1887719676}
   audioOwner: {fileID: 1163071980}
   sceneOwner: {fileID: 1713497285304903807}
-  cursolVisible: {fileID: 8688981623080902697}
+  cursorVisible: {fileID: 2159880400407566207}
