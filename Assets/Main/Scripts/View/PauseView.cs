@@ -12,6 +12,7 @@ namespace Main.View
     /// </summary>
     public class PauseView : MonoBehaviour
     {
+        /// <summary>閉じるまでの時間</summary>
         [SerializeField] private float closedTime = .5f;
 
         /// <summary>

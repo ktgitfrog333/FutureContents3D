@@ -19,6 +19,23 @@ namespace Main.Model
         /// <summary>イベントトリガー</summary>
         private EventTrigger _eventTrigger;
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            Time.timeScale = 0f;
+            if (_button == null)
+                _button = GetComponent<Button>();
+            _button.enabled = true;
+            if (_eventTrigger == null)
+                _eventTrigger = GetComponent<EventTrigger>();
+            _eventTrigger.enabled = true;
+        }
+
+        private void OnDisable()
+        {
+            Time.timeScale = 1f;
+        }
+
         /// <summary>
         /// ボタンのステータスを変更
         /// </summary>

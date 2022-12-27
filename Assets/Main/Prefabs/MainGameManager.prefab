@@ -172,7 +172,7 @@ MonoBehaviour:
   gamePauseModel: {fileID: 0}
   clearView: {fileID: 0}
   stageClearView: {fileID: 0}
-  clearContentsRenderingDelayTime: 0.3
+  clearContentsRenderingDelayTime: 3000
   gameProceedButtonView: {fileID: 0}
   gameProceedButtonModel: {fileID: 0}
   gameRetryButtonView: {fileID: 0}
@@ -437,7 +437,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 6096517560473513808, guid: e4ec12b200fbd4e4e9b0ce04557f8f86, type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 1

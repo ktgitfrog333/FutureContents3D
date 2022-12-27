@@ -114,7 +114,9 @@ namespace Main.Presenter
             cursorIconView.gameObject.SetActive(false);
             clearView.gameObject.SetActive(false);
             gameManualScrollView.gameObject.SetActive(false);
+            moveGuideView.SetAlpha(EnumFadeState.Close);
             moveGuideView.gameObject.SetActive(false);
+            jumpGuideView.SetAlpha(EnumFadeState.Close);
             jumpGuideView.gameObject.SetActive(false);
 
             MainGameManager.Instance.AudioOwner.OnStartAndPlayBGM();
@@ -128,14 +130,21 @@ namespace Main.Presenter
                     isStartDirectionCompleted.Value = true;
                 })
                 .AddTo(gameObject);
+            // ショートカットキーの押下（有効／無効）状態
+            var isInputUIActionsEnabled = new BoolReactiveProperty();
+            // ポーズボタンの押下（有効／無効）状態
+            var isInputUIPausedEnabled = new BoolReactiveProperty();
             // T.B.D ステージ開始演出
             isStartDirectionCompleted.ObserveEveryValueChanged(x => x.Value)
                 .Where(x => x)
                 .Subscribe(_ =>
                 {
                     // T.B.D プレイヤーを開始ポイントへ生成
+                    isInputUIActionsEnabled.Value = true;
+                    isInputUIPausedEnabled.Value = true;
                 });
-
+            // 実行中のショートカットキーのアクション
+            var inProcess = EnumShortcuActionMode.None;
             // ポーズ押下
             var inputUIPausedState = new BoolReactiveProperty();
             inputUIPausedState.ObserveEveryValueChanged(x => x.Value)
@@ -151,7 +160,18 @@ namespace Main.Presenter
                         // 遊び方確認ページを開いているなら閉じる
                         if (gameManualScrollView.gameObject.activeSelf)
                         {
-                            // T.B.D 遊び方確認ページを閉じる
+                            if (!gameManualViewPageModels[(int)EnumShortcuActionMode.CheckAction].SetButtonEnabled(false))
+                                Debug.LogError("ボタン有効／無効切り替え呼び出しの失敗");
+                            if (!gameManualViewPageModels[(int)EnumShortcuActionMode.CheckAction].SetEventTriggerEnabled(false))
+                                Debug.LogError("イベント有効／無効切り替え呼び出しの失敗");
+                            // 遊び方を確認クローズのアニメーション
+                            Observable.FromCoroutine<bool>(observer => gameManualScrollView.PlayCloseAnimation(observer))
+                                .Subscribe(_ =>
+                                {
+                                    gameManualScrollView.gameObject.SetActive(false);
+                                    inProcess = EnumShortcuActionMode.None;
+                                })
+                                .AddTo(gameObject);
                         }
                         pauseView.gameObject.SetActive(true);
                         gamePauseModel.SetSelectedGameObject();
@@ -196,11 +216,6 @@ namespace Main.Presenter
                 });
             // T.B.D クリア画面表示のため、ゴール到達のフラグ更新
             var isGoalReached = new BoolReactiveProperty();
-            // ※※※確認用※※※
-            //DOVirtual.DelayedCall(3f, () =>
-            //{
-            //    isGoalReached.Value = true;
-            //});
             isGoalReached.ObserveEveryValueChanged(x => x.Value)
                 .Subscribe(async x =>
                 {
@@ -347,11 +362,226 @@ namespace Main.Presenter
                             break;
                     }
                 });
+            // ショートカットキー
+            var inputUIPushedTime = new FloatReactiveProperty();
+            var inputUIActionsState = new IntReactiveProperty((int)EnumShortcuActionMode.None);
+            inputUIActionsState.ObserveEveryValueChanged(x => x.Value)
+                .Subscribe(x =>
+                {
+                    // 押下されるボタンが切り替わったら押下時間リセット
+                    inputUIPushedTime.Value = 0f;
+                });
+            inputUIPushedTime.ObserveEveryValueChanged(x => x.Value)
+                .Subscribe(x =>
+                {
+                    if (0f < x)
+                    {
+                        // いずれかのボタンが押されている
+                        if (!((EnumShortcuActionMode)inputUIActionsState.Value).Equals(EnumShortcuActionMode.None))
+                            for (var j = 0; j < pushTimeGageViews.Length; j++)
+                                if (!pushTimeGageViews[j].EnabledPushGageAndGetFillAmount(j == inputUIActionsState.Value ? x : 0f))
+                                    Debug.LogError("ゲージ更新呼び出しの失敗");
+                    }
+                    else
+                        // 全てのボタンから指を離している
+                        for (var j = 0; j < pushTimeGageViews.Length; j++)
+                            if (!pushTimeGageViews[j].EnabledPushGageAndGetFillAmount(0f))
+                                Debug.LogError("ゲージ更新呼び出しの失敗");
+                });
+            // ショートカットキー -> 実行中のアクションを管理
+            for (var i = 0; i < pushTimeGageViews.Length; i++)
+            {
+                var tmpIdx = i;
+                pushTimeGageViews[tmpIdx].FloatReactiveProperty.ObserveEveryValueChanged(x => x.Value)
+                    .Subscribe(x =>
+                    {
+                        // ゲージ満タンで各モードを実行
+                        if (inProcess.Equals(EnumShortcuActionMode.None) && 1f <= x)
+                        {
+                            inProcess = (EnumShortcuActionMode)tmpIdx;
+                            switch (inProcess)
+                            {
+                                case EnumShortcuActionMode.UndoAction:
+                                    MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_retry);
+                                    // チュートリアルUIを開いていたら閉じる
+                                    if (moveGuideView.isActiveAndEnabled)
+                                        // 移動操作クローズのアニメーション
+                                        Observable.FromCoroutine<bool>(observer => moveGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                                            .Subscribe(_ => moveGuideView.gameObject.SetActive(false))
+                                            .AddTo(gameObject);
+                                    if (jumpGuideView.isActiveAndEnabled)
+                                        // ジャンプ操作クローズのアニメーション
+                                        Observable.FromCoroutine<bool>(observer => jumpGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                                            .Subscribe(_ => jumpGuideView.gameObject.SetActive(false))
+                                            .AddTo(gameObject);
+                                    // T.B.D プレイヤーの操作を無効、プレイヤーの挙動によって発生するイベント無効　など
+                                    if (!MainGameManager.Instance.InputSystemsOwner.Exit())
+                                        Debug.LogError("InputSystem終了呼び出しの失敗");
+                                    // シーン読み込み時のアニメーション
+                                    Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                                        .Subscribe(_ => MainGameManager.Instance.SceneOwner.LoadMainScene())
+                                        .AddTo(gameObject);
+                                    break;
+                                case EnumShortcuActionMode.SelectAction:
+                                    MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
+                                    // チュートリアルUIを開いていたら閉じる
+                                    if (moveGuideView.isActiveAndEnabled)
+                                        // 移動操作クローズのアニメーション
+                                        Observable.FromCoroutine<bool>(observer => moveGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                                            .Subscribe(_ => moveGuideView.gameObject.SetActive(false))
+                                            .AddTo(gameObject);
+                                    if (jumpGuideView.isActiveAndEnabled)
+                                        // ジャンプ操作クローズのアニメーション
+                                        Observable.FromCoroutine<bool>(observer => jumpGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                                            .Subscribe(_ => jumpGuideView.gameObject.SetActive(false))
+                                            .AddTo(gameObject);
+                                    // T.B.D プレイヤーの操作を無効、プレイヤーの挙動によって発生するイベント無効　など
+                                    if (!MainGameManager.Instance.InputSystemsOwner.Exit())
+                                        Debug.LogError("InputSystem終了呼び出しの失敗");
+                                    // シーン読み込み時のアニメーション
+                                    Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                                        .Subscribe(_ => MainGameManager.Instance.SceneOwner.LoadSelectScene())
+                                        .AddTo(gameObject);
+                                    break;
+                                case EnumShortcuActionMode.CheckAction:
+                                    // 遊び方の確認を開く
+                                    MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_play_open);
+                                    gameManualScrollView.gameObject.SetActive(true);
+                                    if (!gameManualScrollView.SetPage(EnumGameManualPagesIndex.Page_1))
+                                        Debug.LogError("ページ変更呼び出しの失敗");
+                                    gameManualViewPageModels[(int)EnumGameManualPagesIndex.Page_1].SetSelectedGameObject();
+                                    break;
+                                default:
+                                    Debug.LogWarning("例外ケース");
+                                    break;
+                            }
+                        }
+                    });
+            }
+            // 遊び方を確認
+            for (var i = 0; i < gameManualViewPageModels.Length; i++)
+            {
+                var tmpIdx = i;
+                gameManualViewPageModels[tmpIdx].EventState.ObserveEveryValueChanged(x => x.Value)
+                    .Subscribe(x =>
+                    {
+                        switch ((EnumEventCommand)x)
+                        {
+                            case EnumEventCommand.Default:
+                                // 処理無し
+                                break;
+                            case EnumEventCommand.Selected:
+                                MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
+                                if (!gameManualScrollView.PlayPagingAnimation((EnumGameManualPagesIndex)tmpIdx))
+                                    Debug.LogError("ページ変更アニメーション呼び出しの失敗");
+                                break;
+                            case EnumEventCommand.DeSelected:
+                                // 処理無し
+                                break;
+                            case EnumEventCommand.Submited:
+                                // 処理無し
+                                break;
+                            case EnumEventCommand.Canceled:
+                                MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_cancel);
+                                if (!gameManualViewPageModels[tmpIdx].SetButtonEnabled(false))
+                                    Debug.LogError("ボタン有効／無効切り替え呼び出しの失敗");
+                                if (!gameManualViewPageModels[tmpIdx].SetEventTriggerEnabled(false))
+                                    Debug.LogError("イベント有効／無効切り替え呼び出しの失敗");
+                                // 遊び方を確認クローズのアニメーション
+                                Observable.FromCoroutine<bool>(observer => gameManualScrollView.PlayCloseAnimation(observer))
+                                    .Subscribe(_ =>
+                                    {
+                                        gameManualScrollView.gameObject.SetActive(false);
+                                        inProcess = EnumShortcuActionMode.None;
+                                    })
+                                    .AddTo(gameObject);
+                                break;
+                            default:
+                                Debug.LogWarning("例外ケース");
+                                break;
+                        }
+                    });
+            }
+            // チュートリアルUI -> 移動操作
+            var isTriggerEnteredMoveGuide = new BoolReactiveProperty();
+            isTriggerEnteredMoveGuide.ObserveEveryValueChanged(x => x.Value)
+                .Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        moveGuideView.gameObject.SetActive(true);
+                        // 移動操作オープンのアニメーション
+                        Observable.FromCoroutine<bool>(observer => moveGuideView.PlayFadeAnimation(observer, EnumFadeState.Open))
+                            .Subscribe(_ => { })
+                            .AddTo(gameObject);
+                    }
+                    else
+                    {
+                        // 移動操作クローズのアニメーション
+                        Observable.FromCoroutine<bool>(observer => moveGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                            .Subscribe(_ => moveGuideView.gameObject.SetActive(false))
+                            .AddTo(gameObject);
+                    }
+                });
+            // チュートリアルUI -> ジャンプ操作
+            var isTriggerEnteredJumpGuide = new BoolReactiveProperty();
+            isTriggerEnteredJumpGuide.ObserveEveryValueChanged(x => x.Value)
+                .Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        jumpGuideView.gameObject.SetActive(true);
+                        // ジャンプ操作オープンのアニメーション
+                        Observable.FromCoroutine<bool>(observer => jumpGuideView.PlayFadeAnimation(observer, EnumFadeState.Open))
+                            .Subscribe(_ => { })
+                            .AddTo(gameObject);
+                    }
+                    else
+                    {
+                        // ジャンプ操作クローズのアニメーション
+                        Observable.FromCoroutine<bool>(observer => jumpGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                            .Subscribe(_ => jumpGuideView.gameObject.SetActive(false))
+                            .AddTo(gameObject);
+                    }
+                });
 
             this.UpdateAsObservable()
                 .Subscribe(_ =>
                 {
-                    inputUIPausedState.Value = MainGameManager.Instance.InputSystemsOwner.GetComponent<InputSystemsOwner>().InputUI.Paused;
+                    if (isInputUIPausedEnabled.Value)
+                        inputUIPausedState.Value = MainGameManager.Instance.InputSystemsOwner.GetComponent<InputSystemsOwner>().InputUI.Paused;
+                    if (isInputUIActionsEnabled.Value)
+                    {
+                        if (((EnumShortcuActionMode)inputUIActionsState.Value).Equals(EnumShortcuActionMode.None))
+                        {
+                            // ショートカットキーの押下が None -> Any へ変わる
+                            if (MainGameManager.Instance.InputSystemsOwner.GetComponent<InputSystemsOwner>().InputUI.Undoed &&
+                                !MainGameManager.Instance.InputSystemsOwner.GetComponent<InputSystemsOwner>().InputUI.Selected &&
+                                !MainGameManager.Instance.InputSystemsOwner.GetComponent<InputSystemsOwner>().InputUI.Manualed)
+                                inputUIActionsState.Value = (int)EnumShortcuActionMode.UndoAction;
+                            else if (MainGameManager.Instance.InputSystemsOwner.GetComponent<InputSystemsOwner>().InputUI.Selected &&
+                                !MainGameManager.Instance.InputSystemsOwner.GetComponent<InputSystemsOwner>().InputUI.Manualed)
+                                inputUIActionsState.Value = (int)EnumShortcuActionMode.SelectAction;
+                            else if (MainGameManager.Instance.InputSystemsOwner.GetComponent<InputSystemsOwner>().InputUI.Manualed)
+                                inputUIActionsState.Value = (int)EnumShortcuActionMode.CheckAction;
+                        }
+                        else if ((((EnumShortcuActionMode)inputUIActionsState.Value).Equals(EnumShortcuActionMode.UndoAction) &&
+                            !MainGameManager.Instance.InputSystemsOwner.GetComponent<InputSystemsOwner>().InputUI.Undoed) ||
+                            (((EnumShortcuActionMode)inputUIActionsState.Value).Equals(EnumShortcuActionMode.SelectAction) &&
+                            !MainGameManager.Instance.InputSystemsOwner.GetComponent<InputSystemsOwner>().InputUI.Selected) ||
+                            (((EnumShortcuActionMode)inputUIActionsState.Value).Equals(EnumShortcuActionMode.CheckAction) &&
+                            !MainGameManager.Instance.InputSystemsOwner.GetComponent<InputSystemsOwner>().InputUI.Manualed))
+                        {
+                            // ショートカットキーの押下が Any -> None へ変わる
+                            inputUIActionsState.Value = (int)EnumShortcuActionMode.None;
+                        }
+                        if (!((EnumShortcuActionMode)inputUIActionsState.Value).Equals(EnumShortcuActionMode.None))
+                            inputUIPushedTime.Value += Time.deltaTime;
+                        else if (0f < inputUIPushedTime.Value)
+                            // ショートカットキーの押下状態がNoneへ戻ったらリセット
+                            // 既に0fなら何度も更新は行わない
+                            inputUIPushedTime.Value = 0f;
+                    }
                 });
         }
     }

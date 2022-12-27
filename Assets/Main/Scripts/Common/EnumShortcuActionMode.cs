@@ -19,5 +19,7 @@ namespace Main.Common
         SelectAction,
         /// <summary>遊び方の確認</summary>
         CheckAction,
+        /// <summary>未実施</summary>
+        None = -1,
     }
 }

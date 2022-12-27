@@ -20,10 +20,27 @@ namespace Main.View
         [SerializeField] private ScrollRect scrollRect;
         /// <summary>アニメーション再生時間</summary>
         [SerializeField] private float duration = .1f;
+        /// <summary>閉じるまでの時間</summary>
+        [SerializeField] private float closedTime = .5f;
 
         private void Reset()
         {
             scrollRect = GetComponent<ScrollRect>();
+        }
+
+        /// <summary>
+        /// フェードのDOTweenアニメーション再生
+        /// </summary>
+        /// <param name="observer">バインド</param>
+        /// <param name="state">ステータス</param>
+        /// <returns>成功／失敗</returns>
+        public IEnumerator PlayCloseAnimation(System.IObserver<bool> observer)
+        {
+            DOVirtual.DelayedCall(closedTime, () =>
+            {
+                observer.OnNext(true);
+            });
+            yield return null;
         }
 
         /// <summary>
@@ -54,7 +71,8 @@ namespace Main.View
         {
             try
             {
-                scrollRect.DOHorizontalNormalizedPos(pagesPos[(int)pageIndex], duration);
+                scrollRect.DOHorizontalNormalizedPos(pagesPos[(int)pageIndex], duration)
+                    .SetUpdate(true);
                 return true;
             }
             catch (System.Exception e)
