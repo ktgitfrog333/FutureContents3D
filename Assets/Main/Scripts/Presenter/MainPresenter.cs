@@ -132,13 +132,14 @@ namespace Main.Presenter
 
             MainGameManager.Instance.AudioOwner.OnStartAndPlayBGM();
             // T.B.D ステージ開始演出
-            var isStartDirectionCompleted = new BoolReactiveProperty();
+            var isStartDirectionCompleted = new IntReactiveProperty();
             // シーン読み込み時のアニメーション
             Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Open))
                 .Subscribe(_ =>
                 {
                     // T.B.D ステージ開始演出
-                    isStartDirectionCompleted.Value = true;
+                    isStartDirectionCompleted.Value++;
+                    Debug.Log($"フェード完了:[{isStartDirectionCompleted.Value}]");
                 })
                 .AddTo(gameObject);
             // ショートカットキーの押下（有効／無効）状態
@@ -147,12 +148,13 @@ namespace Main.Presenter
             var isInputUIPausedEnabled = new BoolReactiveProperty();
             // T.B.D ステージ開始演出
             isStartDirectionCompleted.ObserveEveryValueChanged(x => x.Value)
-                .Where(x => x)
+                .Where(x => x == 2)
                 .Subscribe(_ =>
                 {
                     // プレイヤーを開始ポイントへ生成
-                    if (!playerStartPointView.InstancePlayer())
-                        Debug.LogError("プレイヤー生成呼び出しの失敗");
+                    if (playerStartPointView != null)
+                        if (!playerStartPointView.InstancePlayer())
+                            Debug.LogError("プレイヤー生成呼び出しの失敗");
                     isInputUIActionsEnabled.Value = true;
                     isInputUIPausedEnabled.Value = true;
                 });
@@ -571,6 +573,8 @@ namespace Main.Presenter
                     {
                         // プレイヤーがインスタンス状態
                         playerStartPointView = GameObject.Find(ConstGameObjectNames.GAMEOBJECT_NAME_PLAYERSTARTPOINT).GetComponent<PlayerStartPointView>();
+                        isStartDirectionCompleted.Value++;
+                        Debug.Log($"スタート開始位置を生成完了:[{isStartDirectionCompleted.Value}]");
                         playerStartPointView.IsInstanced.ObserveEveryValueChanged(x => x.Value)
                             .Subscribe(x =>
                             {

@@ -17,6 +17,13 @@ namespace Main.View
     {
         /// <summary>終了時間</summary>
         [SerializeField] private float duration = 2.0f;
+        /// <summary>イメージ</summary>
+        [SerializeField] Image image;
+
+        private void Reset()
+        {
+            image = GetComponent<Image>();
+        }
 
         /// <summary>
         /// フェードのDOTweenアニメーション再生
@@ -26,7 +33,7 @@ namespace Main.View
         /// <returns>成功／失敗</returns>
         public IEnumerator PlayFadeAnimation(System.IObserver<bool> observer, EnumFadeState state)
         {
-            GetComponent<Image>().DOFade(endValue: state.Equals(EnumFadeState.Open) ? 0f : 1f, duration)
+            image.DOFade(endValue: state.Equals(EnumFadeState.Open) ? 0f : 1f, duration)
                 .SetUpdate(true)
                 .OnComplete(() => observer.OnNext(true));
             yield return null;

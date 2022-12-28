@@ -77,6 +77,8 @@ namespace Title.Presenter
             gameExitConfirm.SetActive(false);
             cursorIcon.SetActive(false);
             fadeImage.SetActive(true);
+            // BGMを再生
+            TitleGameManager.Instance.AudioOwner.PlayBGM(ClipToPlayBGM.bgm_title);
             // シーン読み込み時のアニメーション
             Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Open))
                 .Subscribe(_ =>
@@ -85,8 +87,6 @@ namespace Title.Presenter
                     pushGameStart.SetActive(true);
                     if (!pushGameStartLogoModel.OnStart())
                         Debug.LogError("PushGameStart開始イベント呼び出しの失敗");
-                    // BGMを再生
-                    TitleGameManager.Instance.AudioOwner.PlayBGM(ClipToPlayBGM.bgm_title);
                 })
                 .AddTo(gameObject);
             // プッシュゲームスタート
@@ -95,6 +95,15 @@ namespace Title.Presenter
                 {
                     switch ((EnumEventCommand)x)
                     {
+                        case EnumEventCommand.Default:
+                            // 処理無し
+                            break;
+                        case EnumEventCommand.Selected:
+                            // 処理無し
+                            break;
+                        case EnumEventCommand.DeSelected:
+                            // 処理無し
+                            break;
                         case EnumEventCommand.AnyKeysPushed:
                             // ゲーム開始／終了UIを表示
                             pushGameStart.SetActive(false);
@@ -105,6 +114,12 @@ namespace Title.Presenter
                                 Debug.LogError("カーソル選択位置変更処理呼び出しの失敗");
                             // ゲームスタートSEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_game_start);
+                            break;
+                        case EnumEventCommand.Submited:
+                            // 処理無し
+                            break;
+                        case EnumEventCommand.Canceled:
+                            // 処理無し
                             break;
                         default:
                             Debug.LogWarning("例外ケース");
@@ -142,11 +157,17 @@ namespace Title.Presenter
                 {
                     switch ((EnumEventCommand)x)
                     {
+                        case EnumEventCommand.Default:
+                            // 処理無し
+                            break;
                         case EnumEventCommand.Selected:
                             if (!cursorIconView.PlaySelectAnimation(gameStartLogoView.transform.position))
                                 Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
                             // 選択SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
+                            break;
+                        case EnumEventCommand.DeSelected:
+                            // 処理無し
                             break;
                         case EnumEventCommand.Canceled:
                             cursorIcon.SetActive(false);
@@ -176,11 +197,17 @@ namespace Title.Presenter
                 {
                     switch ((EnumEventCommand)x)
                     {
+                        case EnumEventCommand.Default:
+                            // 処理無し
+                            break;
                         case EnumEventCommand.Selected:
                             if (!cursorIconView.PlaySelectAnimation(gameExitLogoView.transform.position))
                                 Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
                             // 選択SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
+                            break;
+                        case EnumEventCommand.DeSelected:
+                            // 処理無し
                             break;
                         case EnumEventCommand.Canceled:
                             cursorIcon.SetActive(false);
@@ -208,11 +235,17 @@ namespace Title.Presenter
                 {
                     switch ((EnumEventCommand)x)
                     {
+                        case EnumEventCommand.Default:
+                            // 処理無し
+                            break;
                         case EnumEventCommand.Selected:
                             if (!cursorIconView.PlaySelectAnimation(gameExitConfirmYesLogoView.transform.position))
                                 Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
                             // 選択SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
+                            break;
+                        case EnumEventCommand.DeSelected:
+                            // 処理無し
                             break;
                         case EnumEventCommand.Canceled:
                             gameExitConfirm.SetActive(false);
@@ -242,11 +275,17 @@ namespace Title.Presenter
                 {
                     switch ((EnumEventCommand)x)
                     {
+                        case EnumEventCommand.Default:
+                            // 処理無し
+                            break;
                         case EnumEventCommand.Selected:
                             if (!cursorIconView.PlaySelectAnimation(gameExitConfirmNoLogoView.transform.position))
                                 Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
                             // 選択SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
+                            break;
+                        case EnumEventCommand.DeSelected:
+                            // 処理無し
                             break;
                         case EnumEventCommand.Canceled:
                             gameExitConfirm.SetActive(false);
@@ -265,7 +304,7 @@ namespace Title.Presenter
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_cancel);
                             break;
                         default:
-                            //Debug.LogWarning("例外ケース");
+                            Debug.LogWarning("例外ケース");
                             break;
                     }
                 });

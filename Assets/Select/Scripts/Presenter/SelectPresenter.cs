@@ -117,6 +117,7 @@ namespace Select.Presenter
                 if (child != null)
                     child.SetVisible(false);
 
+            SelectGameManager.Instance.AudioOwner.PlayBGM(ClipToPlayBGM.bgm_select);
             // シーン読み込み時のアニメーション
             Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Open))
                 .Subscribe(_ =>
@@ -128,8 +129,6 @@ namespace Select.Presenter
                             child.SetButtonEnabled(true);
                             child.SetEventTriggerEnabled(true);
                         }
-                    // BGMを再生
-                    SelectGameManager.Instance.AudioOwner.PlayBGM(ClipToPlayBGM.bgm_select);
                 })
                 .AddTo(gameObject);
 
@@ -143,8 +142,15 @@ namespace Select.Presenter
                 {
                     // ページ表示切り替え
                     var pageIdx = ((x - 1) / contentsCountInPage) + 1;
-                    if (!pageViews[pageIdx].SetVisible(true))
-                        Debug.LogError("アルファ値切り替え処理の失敗");
+                    for (var i = 0; i < pageViews.Length; i++)
+                    {
+                        if (i == 0)
+                            // 0ページは存在しないためスキップ
+                            continue;
+                        // 該当ページのみ表示させる
+                        if (!pageViews[i].SetVisible(i == pageIdx))
+                            Debug.LogError("アルファ値切り替え処理の失敗");
+                    }
                     // ロゴステージ表示切り替え
                     if (!logoStageViews[x].MoveSelectStageFrame())
                         Debug.LogError("ステージ選択のフレーム移動の失敗");
@@ -189,10 +195,16 @@ namespace Select.Presenter
                     {
                         switch ((EnumEventCommand)x)
                         {
+                            case EnumEventCommand.Default:
+                                // 処理無し
+                                break;
                             case EnumEventCommand.Selected:
                                 // 選択SEを再生
                                 SelectGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
                                 stageIndex.Value = child.Index;
+                                break;
+                            case EnumEventCommand.DeSelected:
+                                // 処理無し
                                 break;
                             case EnumEventCommand.Canceled:
                                 // キャンセルSEを再生
@@ -239,7 +251,7 @@ namespace Select.Presenter
 
                                 break;
                             default:
-                                //Debug.LogWarning("例外ケース");
+                                Debug.LogWarning("例外ケース");
                                 break;
                         }
                     });
