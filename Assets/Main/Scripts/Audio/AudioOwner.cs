@@ -75,6 +75,8 @@ namespace Main.Audio
         se_player_dead,
         /// <summary>落下音</summary>
         se_player_fall,
+        /// <summary>ジャンプ</summary>
+        se_player_jump,
         /// <summary>リトライ</summary>
         se_retry,
         /// <summary>ステージセレクト</summary>

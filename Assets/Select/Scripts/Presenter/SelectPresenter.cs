@@ -232,7 +232,7 @@ namespace Select.Presenter
                                 Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
                                     .Subscribe(_ =>
                                     {
-                                        // T.B.D メインシーンを実装
+                                        // メインシーンを実装
                                         SelectGameManager.Instance.SceneOwner.LoadMainScene();
                                     })
                                     .AddTo(gameObject);

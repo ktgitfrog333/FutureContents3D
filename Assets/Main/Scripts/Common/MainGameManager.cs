@@ -41,6 +41,10 @@ namespace Main.Common
         [SerializeField] private SkyBoxOwner skyBoxOwner;
         /// <summary>SkyBoxのオーナー</summary>
         public SkyBoxOwner SkyBoxOwner => skyBoxOwner;
+        /// <summary>Levelのオーナー</summary>
+        [SerializeField] private LevelOwner levelOwner;
+        /// <summary>Levelのオーナー</summary>
+        public LevelOwner LevelOwner => levelOwner;
 
         private void Reset()
         {
@@ -50,6 +54,7 @@ namespace Main.Common
             cursorVisible = GameObject.Find("CursorVisible").GetComponent<CursorVisible>();
             inputSystemsOwner = GameObject.Find("InputSystemsOwner").GetComponent<InputSystemsOwner>();
             skyBoxOwner = GameObject.Find("SkyBoxOwner").GetComponent<SkyBoxOwner>();
+            levelOwner = GameObject.Find("LevelOwner").GetComponent<LevelOwner>();
         }
 
         private void Awake()
@@ -65,6 +70,7 @@ namespace Main.Common
             cursorVisible.OnStart();
             inputSystemsOwner.OnStart();
             skyBoxOwner.OnStart();
+            levelOwner.OnStart();
         }
     }
 

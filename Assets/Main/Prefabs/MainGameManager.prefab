@@ -48,6 +48,55 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 75d8e350201b9534cb460dc008ee8580, type: 2}
   - {fileID: 2100000, guid: 80e5814790ed26942af85f239f35f86b, type: 2}
   - {fileID: 2100000, guid: f75c96fe9f81f0d48a340c4901a0fd18, type: 2}
+--- !u!1 &1095801330
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1095801331}
+  - component: {fileID: 1095801332}
+  m_Layer: 0
+  m_Name: LevelOwner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1095801331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1095801330}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1369696456132551609}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1095801332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1095801330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a37bce952865fd14ba8b672be3995d96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: {fileID: 0}
+  levelPrefabs:
+  - {fileID: 0}
+  - {fileID: 6549890182344381133, guid: efb49213c3cee15408fabb37e645ed21, type: 3}
+  - {fileID: 6549890182344381133, guid: 8bc1aaf2866c71145939ace42334ee52, type: 3}
 --- !u!1 &1827416082
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,6 +249,12 @@ MonoBehaviour:
   jumpGuideView: {fileID: 0}
   fadeImageView: {fileID: 0}
   fadeImageModel: {fileID: 0}
+  playerStartPointView: {fileID: 0}
+  safeZoneModel: {fileID: 0}
+  goalPointView: {fileID: 0}
+  goalPointModel: {fileID: 0}
+  playerView: {fileID: 0}
+  playerModel: {fileID: 0}
 --- !u!1 &1369696454729978949
 GameObject:
   m_ObjectHideFlags: 0
@@ -345,6 +400,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f624c07d8884fcc4baacfce191daffb9, type: 3}
   - {fileID: 8300000, guid: d1bbae9c3d78d8b4286f995d4d44fd1c, type: 3}
   - {fileID: 8300000, guid: f5263225548b47848b9fa0cdf75194e8, type: 3}
+  - {fileID: 8300000, guid: d61a604cd573e354c99e5e73fc6682ec, type: 3}
   - {fileID: 8300000, guid: 99472434ca475e64db53f2a238cfc578, type: 3}
   - {fileID: 8300000, guid: 83b11e912e5ef9e4b8d5292505402f65, type: 3}
   sFXChannelPrefab: {fileID: 1821450510366777210, guid: 13aae3403db5d45428b59ad80eca3da0, type: 3}
@@ -622,6 +678,7 @@ Transform:
   - {fileID: 1369696454755293827}
   - {fileID: 1827416083}
   - {fileID: 128176305}
+  - {fileID: 1095801331}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -643,3 +700,4 @@ MonoBehaviour:
   cursorVisible: {fileID: 1181800397}
   inputSystemsOwner: {fileID: 1827416086}
   skyBoxOwner: {fileID: 128176306}
+  levelOwner: {fileID: 1095801332}

@@ -9,7 +9,6 @@ using UniRx.Triggers;
 using Main.Audio;
 using System.Linq;
 using Main.InputSystem;
-using DG.Tweening;
 using System.Threading.Tasks;
 
 namespace Main.Presenter
@@ -64,6 +63,18 @@ namespace Main.Presenter
         [SerializeField] private FadeImageView fadeImageView;
         /// <summary>フェードのモデル</summary>
         [SerializeField] private FadeImageModel fadeImageModel;
+        /// <summary>プレイヤー開始位置のビュー</summary>
+        [SerializeField] private PlayerStartPointView playerStartPointView;
+        /// <summary>セーフゾーンのモデル</summary>
+        [SerializeField] private SafeZoneModel safeZoneModel;
+        /// <summary>ゴールポイントのビュー</summary>
+        [SerializeField] private GoalPointView goalPointView;
+        /// <summary>ゴールポイントのモデル</summary>
+        [SerializeField] private GoalPointModel goalPointModel;
+        /// <summary>プレイヤーのビュー</summary>
+        [SerializeField] private PlayerView playerView;
+        /// <summary>プレイヤーのモデル</summary>
+        [SerializeField] private PlayerModel playerModel;
 
         private void Reset()
         {
@@ -139,7 +150,9 @@ namespace Main.Presenter
                 .Where(x => x)
                 .Subscribe(_ =>
                 {
-                    // T.B.D プレイヤーを開始ポイントへ生成
+                    // プレイヤーを開始ポイントへ生成
+                    if (!playerStartPointView.InstancePlayer())
+                        Debug.LogError("プレイヤー生成呼び出しの失敗");
                     isInputUIActionsEnabled.Value = true;
                     isInputUIPausedEnabled.Value = true;
                 });
@@ -214,7 +227,7 @@ namespace Main.Presenter
                             break;
                     }
                 });
-            // T.B.D クリア画面表示のため、ゴール到達のフラグ更新
+            // クリア画面表示のため、ゴール到達のフラグ更新
             var isGoalReached = new BoolReactiveProperty();
             isGoalReached.ObserveEveryValueChanged(x => x.Value)
                 .Subscribe(async x =>
@@ -414,7 +427,10 @@ namespace Main.Presenter
                                         Observable.FromCoroutine<bool>(observer => jumpGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
                                             .Subscribe(_ => jumpGuideView.gameObject.SetActive(false))
                                             .AddTo(gameObject);
-                                    // T.B.D プレイヤーの操作を無効、プレイヤーの挙動によって発生するイベント無効　など
+                                    if (playerModel != null)
+                                        if (!playerModel.SetInputBan(true))
+                                            Debug.LogError("操作禁止フラグ更新呼び出しの失敗");
+                                    // T.B.D プレイヤーの挙動によって発生するイベント無効　など
                                     if (!MainGameManager.Instance.InputSystemsOwner.Exit())
                                         Debug.LogError("InputSystem終了呼び出しの失敗");
                                     // シーン読み込み時のアニメーション
@@ -435,7 +451,10 @@ namespace Main.Presenter
                                         Observable.FromCoroutine<bool>(observer => jumpGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
                                             .Subscribe(_ => jumpGuideView.gameObject.SetActive(false))
                                             .AddTo(gameObject);
-                                    // T.B.D プレイヤーの操作を無効、プレイヤーの挙動によって発生するイベント無効　など
+                                    if (playerModel != null)
+                                        if (!playerModel.SetInputBan(true))
+                                            Debug.LogError("操作禁止フラグ更新呼び出しの失敗");
+                                    // T.B.D プレイヤーの挙動によって発生するイベント無効　など
                                     if (!MainGameManager.Instance.InputSystemsOwner.Exit())
                                         Debug.LogError("InputSystem終了呼び出しの失敗");
                                     // シーン読み込み時のアニメーション
@@ -542,6 +561,65 @@ namespace Main.Presenter
                         Observable.FromCoroutine<bool>(observer => jumpGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
                             .Subscribe(_ => jumpGuideView.gameObject.SetActive(false))
                             .AddTo(gameObject);
+                    }
+                });
+            // レベルのインスタンスに合わせてメンバー変数をセット
+            MainGameManager.Instance.LevelOwner.IsInstanced.ObserveEveryValueChanged(x => x.Value)
+                .Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        // プレイヤーがインスタンス状態
+                        playerStartPointView = GameObject.Find(ConstGameObjectNames.GAMEOBJECT_NAME_PLAYERSTARTPOINT).GetComponent<PlayerStartPointView>();
+                        playerStartPointView.IsInstanced.ObserveEveryValueChanged(x => x.Value)
+                            .Subscribe(x =>
+                            {
+                                if (x)
+                                {
+                                    var player = GameObject.FindGameObjectWithTag(ConstTagNames.TAG_NAME_PLAYER);
+                                    playerView = player.GetComponent<PlayerView>();
+                                    playerModel = player.GetComponent<PlayerModel>();
+                                }
+                            });
+                        safeZoneModel = GameObject.Find(ConstGameObjectNames.GAMEOBJECT_NAME_SAFEZONE).GetComponent<SafeZoneModel>();
+                        safeZoneModel.IsTriggerExited.ObserveEveryValueChanged(x => x.Value)
+                            .Subscribe(x =>
+                            {
+                                if (x)
+                                {
+                                    MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_player_fall);
+                                    // チュートリアルUIを開いていたら閉じる
+                                    if (moveGuideView.isActiveAndEnabled)
+                                        // 移動操作クローズのアニメーション
+                                        Observable.FromCoroutine<bool>(observer => moveGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                                            .Subscribe(_ => moveGuideView.gameObject.SetActive(false))
+                                            .AddTo(gameObject);
+                                    if (jumpGuideView.isActiveAndEnabled)
+                                        // ジャンプ操作クローズのアニメーション
+                                        Observable.FromCoroutine<bool>(observer => jumpGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                                            .Subscribe(_ => jumpGuideView.gameObject.SetActive(false))
+                                            .AddTo(gameObject);
+                                    if (playerModel != null)
+                                        if (!playerModel.SetInputBan(true))
+                                            Debug.LogError("操作禁止フラグ更新呼び出しの失敗");
+                                    // T.B.D プレイヤーの挙動によって発生するイベント無効　など
+                                    if (!MainGameManager.Instance.InputSystemsOwner.Exit())
+                                        Debug.LogError("InputSystem終了呼び出しの失敗");
+                                    // シーン読み込み時のアニメーション
+                                    Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
+                                        .Subscribe(_ => MainGameManager.Instance.SceneOwner.LoadMainScene())
+                                        .AddTo(gameObject);
+                                }
+                            });
+                        var goalPointObj = GameObject.Find(ConstGameObjectNames.GAMEOBJECT_NAME_GOALPOINT);
+                        goalPointView = goalPointObj.GetComponent<GoalPointView>();
+                        goalPointModel = goalPointObj.GetComponent<GoalPointModel>();
+                        goalPointModel.IsTriggerExited.ObserveEveryValueChanged(x => x.Value)
+                            .Subscribe(x =>
+                            {
+                                if (x)
+                                    isGoalReached.Value = true;
+                            });
                     }
                 });
 

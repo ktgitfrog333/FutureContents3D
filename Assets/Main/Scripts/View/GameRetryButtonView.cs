@@ -28,7 +28,8 @@ namespace Main.View
             {
                 if (_transform == null)
                     _transform = transform;
-                _transform.DOScale(size, duration);
+                _transform.DOScale(size, duration)
+                    .SetUpdate(true);
 
                 return true;
             }
