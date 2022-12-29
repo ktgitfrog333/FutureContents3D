@@ -24,10 +24,20 @@ namespace Select.Accessory
             {
                 Directory.CreateDirectory(GetHomePath());
             }
-            // システム設定ファイルが存在しない場合は作成
+            // システム設定キャッシュが存在しない場合は作成
             if (!File.Exists($"{GetHomePath()}{ConstResorcesNames.SYSTEM_COMMON_CASH}.csv"))
             {
                 using (File.Create($"{GetHomePath()}{ConstResorcesNames.SYSTEM_COMMON_CASH}.csv")) { }
+            }
+            // ステージクリア済みデータが存在しない場合は作成
+            if (!File.Exists($"{GetHomePath()}{ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED}.csv"))
+            {
+                using (File.Create($"{GetHomePath()}{ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED}.csv")) { }
+            }
+            // システム設定が存在しない場合は作成
+            if (!File.Exists($"{GetHomePath()}{ConstResorcesNames.SYSTEM_CONFIG}.csv"))
+            {
+                using (File.Create($"{GetHomePath()}{ConstResorcesNames.SYSTEM_CONFIG}.csv")) { }
             }
         }
 
