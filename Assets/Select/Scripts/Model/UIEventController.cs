@@ -35,7 +35,7 @@ namespace Select.Model
         /// <summary>イベントシステム</summary>
         private EventSystem _eventSystem;
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             if (_eventSystem == null)
                 _eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();

@@ -35,9 +35,29 @@ namespace Select.Template
         /// </summary>
         /// <param name="datas">二次元配列の文字列データ</param>
         /// <returns>格納オブジェクト</returns>
-        public Dictionary<EnumSystemCommonCash, int> GetSystemConfig(List<string[]> datas)
+        public Dictionary<EnumSystemConfig, int> GetSystemConfig(List<string[]> datas)
         {
             return new SelectResourcesAccessory().GetSystemConfig(datas);
+        }
+
+        /// <summary>
+        /// システムオプション設定をオブジェクトへ一時セット
+        /// </summary>
+        /// <param name="datas">二次元配列の文字列データ</param>
+        /// <returns>格納オブジェクト</returns>
+        public Dictionary<EnumSystemCommonCash, int> GetSystemCommonCash(List<string[]> datas)
+        {
+            return new SelectResourcesAccessory().GetSystemCommonCash(datas);
+        }
+
+        /// <summary>
+        /// ステージクリア済みデータをオブジェクトへ一時セット
+        /// </summary>
+        /// <param name="datas">二次元配列の文字列データ</param>
+        /// <returns>格納オブジェクト配列</returns>
+        public Dictionary<EnumMainSceneStagesCleared, int>[] GetMainSceneStagesCleared(List<string[]> datas)
+        {
+            return new SelectResourcesAccessory().GetMainSceneStagesCleared(datas);
         }
 
         /// <summary>

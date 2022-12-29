@@ -14,16 +14,20 @@ namespace Select.Audio
         [SerializeField] private SfxPlayer sfxPlayer;
         /// <summary>BGMのプレイヤー</summary>
         [SerializeField] private BgmPlayer bgmPlayer;
+        /// <summary>オーディオミキサー</summary>
+        [SerializeField] private AudioMixerController audioMixer;
 
         private void Reset()
         {
             sfxPlayer = GameObject.Find("SfxPlayer").GetComponent<SfxPlayer>();
             bgmPlayer = GameObject.Find("BgmPlayer").GetComponent<BgmPlayer>();
+            audioMixer = GameObject.Find("AudioMixer").GetComponent<AudioMixerController>();
         }
 
         public void OnStart()
         {
             sfxPlayer.OnStart();
+            audioMixer.OnStart();
         }
 
         public void PlaySFX(ClipToPlay clipToPlay)

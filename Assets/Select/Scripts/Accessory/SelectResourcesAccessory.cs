@@ -120,7 +120,36 @@ namespace Select.Accessory
         /// </summary>
         /// <param name="datas">二次元配列の文字列データ</param>
         /// <returns>格納オブジェクト</returns>
-        public Dictionary<EnumSystemCommonCash, int> GetSystemConfig(List<string[]> datas)
+        public Dictionary<EnumSystemConfig, int> GetSystemConfig(List<string[]> datas)
+        {
+            try
+            {
+                var configMap = new Dictionary<EnumSystemConfig, int>();
+                // 一行目はカラム名なのでスキップ
+                for (var i = 1; i < datas.Count; i++)
+                {
+                    var child = datas[i];
+                    for (var j = 0; j < child.Length; j++)
+                    {
+                        configMap[(EnumSystemConfig)j] = int.Parse(child[j]);
+                    }
+                }
+
+                return configMap;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// システムオプション設定をオブジェクトへ一時セット
+        /// </summary>
+        /// <param name="datas">二次元配列の文字列データ</param>
+        /// <returns>格納オブジェクト</returns>
+        public Dictionary<EnumSystemCommonCash, int> GetSystemCommonCash(List<string[]> datas)
         {
             try
             {
@@ -136,6 +165,43 @@ namespace Select.Accessory
                 }
 
                 return configMap;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// ステージクリア済みデータをオブジェクトへ一時セット
+        /// </summary>
+        /// <param name="datas">二次元配列の文字列データ</param>
+        /// <returns>格納オブジェクト配列</returns>
+        public Dictionary<EnumMainSceneStagesCleared, int>[] GetMainSceneStagesCleared(List<string[]> datas)
+        {
+            try
+            {
+                var configMapList = new List<Dictionary<EnumMainSceneStagesCleared, int>>();
+                // 配列のインデックスとステージIDを揃えるため、0番目はダミーデータを格納
+                var dummy = new Dictionary<EnumMainSceneStagesCleared, int>();
+                dummy[EnumMainSceneStagesCleared.Cleared] = -1;
+                configMapList.Add(dummy);
+                for (var i = 0; i < datas.Count; i++)
+                {
+                    if (i == 0)
+                        // 一行目はカラム名なのでスキップ
+                        continue;
+                    var child = datas[i];
+                    for (var j = 0; j < child.Length; j++)
+                    {
+                        var configMap = new Dictionary<EnumMainSceneStagesCleared, int>();
+                        configMap[(EnumMainSceneStagesCleared)j] = int.Parse(child[j]);
+                        configMapList.Add(configMap);
+                    }
+                }
+
+                return configMapList.ToArray();
             }
             catch (System.Exception e)
             {

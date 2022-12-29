@@ -40,5 +40,23 @@ namespace Select.View
                 return false;
             }
         }
+
+        /// <summary>
+        /// T.B.D クリア済みマークを表示
+        /// </summary>
+        /// <returns>成功／失敗</returns>
+        public bool RenderClearMark()
+        {
+            try
+            {
+                Debug.Log("クリア済み");
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return false;
+            }
+        }
     }
 }

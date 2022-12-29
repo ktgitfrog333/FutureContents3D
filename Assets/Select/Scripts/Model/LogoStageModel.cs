@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Select.Common;
+using UniRx;
 
 namespace Select.Model
 {
@@ -36,6 +38,20 @@ namespace Select.Model
         private Button _button;
         /// <summary>イベントトリガー</summary>
         private EventTrigger _eventTrigger;
+        /// <summary>ステージクリア済み</summary>
+        private readonly BoolReactiveProperty isCleared = new BoolReactiveProperty();
+        /// <summary>ステージクリア済み</summary>
+        public IReactiveProperty<bool> IsCleared => isCleared;
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            if (SelectGameManager.Instance != null)
+            {
+                var mainSceneStagesCleared = SelectGameManager.Instance.SceneOwner.GetMainSceneStagesCleared();
+                isCleared.Value = mainSceneStagesCleared[Index][EnumMainSceneStagesCleared.Cleared] == 1;
+            }
+        }
 
         /// <summary>
         /// ボタンのステータスを変更

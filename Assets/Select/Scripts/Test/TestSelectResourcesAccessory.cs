@@ -42,7 +42,7 @@ namespace Select.Test
                 }
             }
             Debug.Log("---GetSystemCommonCash---");
-            var configMap = tSResources.GetSystemConfig(datas);
+            var configMap = tSResources.GetSystemCommonCash(datas);
             foreach (var map in configMap)
             {
                 Debug.Log($"Key:{map.Key}_Val:{map.Value}");

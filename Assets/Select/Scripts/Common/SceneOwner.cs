@@ -9,12 +9,17 @@ namespace Select.Common
     /// <summary>
     /// シーンオーナー
     /// </summary>
-    public class SceneOwner : MonoBehaviour
+    public class SceneOwner : MonoBehaviour, ISelectGameManager
     {
         /// <summary>次のシーン名</summary>
         [SerializeField] private string nextSceneName = "MainScene";
         /// <summary>前のシーン名</summary>
         [SerializeField] private string backSceneName = "TitleScene";
+
+        public void OnStart()
+        {
+            new SelectTemplateResourcesAccessory().Initialize();
+        }
 
         /// <summary>
         /// シーンIDを取得
@@ -30,7 +35,30 @@ namespace Select.Common
                 if (datas == null)
                     throw new System.Exception("リソース読み込みの失敗");
 
-                return tSResources.GetSystemConfig(datas);
+                return tSResources.GetSystemCommonCash(datas);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// ステージクリア済みデータを取得
+        /// </summary>
+        /// <returns>ステージクリア済みデータ</returns>
+        public Dictionary<EnumMainSceneStagesCleared, int>[] GetMainSceneStagesCleared()
+        {
+            try
+            {
+                var tSResources = new SelectTemplateResourcesAccessory();
+                tSResources.Initialize();
+                var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED);
+                if (datas == null)
+                    throw new System.Exception("リソース読み込みの失敗");
+
+                return tSResources.GetMainSceneStagesCleared(datas);
             }
             catch (System.Exception e)
             {

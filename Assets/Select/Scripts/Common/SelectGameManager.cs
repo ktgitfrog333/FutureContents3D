@@ -52,6 +52,7 @@ namespace Select.Common
             audioOwner.OnStart();
             presenter.OnStart();
             cursorVisible.OnStart();
+            sceneOwner.OnStart();
         }
     }
 

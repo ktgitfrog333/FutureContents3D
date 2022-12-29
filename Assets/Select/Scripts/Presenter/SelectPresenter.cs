@@ -136,6 +136,23 @@ namespace Select.Presenter
             var sysCommonCash = SelectGameManager.Instance.SceneOwner.GetSystemCommonCash();
             var stageIndex = new IntReactiveProperty(sysCommonCash[EnumSystemCommonCash.SceneId]);
             logoStageModels[stageIndex.Value].SetSelectedGameObject();
+            // クリア済みマークの表示
+            for (var i = 0; i < logoStageModels.Length; i++)
+            {
+                if (i == 0)
+                    // 0番目は空データのためスキップ
+                    continue;
+                var idx = i;
+                logoStageModels[idx].IsCleared.ObserveEveryValueChanged(x => x.Value)
+                    .Subscribe(x =>
+                    {
+                        if (x)
+                        {
+                            if (!logoStageViews[idx].RenderClearMark())
+                                Debug.LogError("クリア済みマーク表示呼び出しの失敗");
+                        }
+                    });
+            }
             // 選択ステージ番号の更新
             stageIndex.ObserveEveryValueChanged(x => x.Value)
                 .Subscribe(x =>
