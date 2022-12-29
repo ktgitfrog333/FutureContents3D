@@ -7,6 +7,7 @@ using System;
 using UniRx;
 using UniRx.Triggers;
 using DG.Tweening;
+using Main.Template;
 
 namespace Main.InputSystem
 {
@@ -41,6 +42,8 @@ namespace Main.InputSystem
         [SerializeField] private float rightMotor = 0f;
         /// <summary>振動を停止するまでの時間</summary>
         [SerializeField] private float delayTime = .3f;
+        /// <summary>振動を有効フラグ</summary>
+        [SerializeField] private bool isVibrationEnabled;
 
         private void Reset()
         {
@@ -93,6 +96,13 @@ namespace Main.InputSystem
                 .AddTo(_compositeDisposable);
             // ゲームパッドの情報をセット
             _gamepad = Gamepad.current;
+
+            var tResourcesAccessory = new MainTemplateResourcesAccessory();
+            // ステージ共通設定の取得
+            var mainSceneStagesConfResources = tResourcesAccessory.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
+            var mainSceneStagesConfs = tResourcesAccessory.GetSystemConfig(mainSceneStagesConfResources);
+
+            isVibrationEnabled = mainSceneStagesConfs[EnumSystemConfig.VibrationEnableIndex] == 1;
         }
 
         public bool Exit()
@@ -126,13 +136,18 @@ namespace Main.InputSystem
         {
             try
             {
-                if (_gamepad != null)
-                    _gamepad.SetMotorSpeeds(leftMotor, rightMotor);
-                DOVirtual.DelayedCall(delayTime, () =>
+                if (isVibrationEnabled)
                 {
-                    if (!StopVibration())
-                        Debug.LogError("振動停止の失敗");
-                });
+                    if (_gamepad != null)
+                        _gamepad.SetMotorSpeeds(leftMotor, rightMotor);
+                    DOVirtual.DelayedCall(delayTime, () =>
+                    {
+                        if (!StopVibration())
+                            Debug.LogError("振動停止の失敗");
+                    });
+                }
+                else
+                    Debug.Log("振動オフ設定済み");
                 return true;
             }
             catch (System.Exception e)

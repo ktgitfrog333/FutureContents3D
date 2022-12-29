@@ -23,7 +23,7 @@ namespace Title.Common
         /// ステージクリア済みデータの削除
         /// </summary>
         /// <returns>成功／失敗</returns>
-        public bool DestroyMainSceneStagesConfig()
+        public bool DestroyMainSceneStagesCleared()
         {
             try
             {

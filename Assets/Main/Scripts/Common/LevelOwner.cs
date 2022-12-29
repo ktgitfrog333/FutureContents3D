@@ -41,7 +41,7 @@ namespace Main.Common
             var tResourcesAccessory = new MainTemplateResourcesAccessory();
             // ステージIDの取得
             var sysComCashResources = tResourcesAccessory.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
-            var sysComCash = tResourcesAccessory.GetSystemConfig(sysComCashResources);
+            var sysComCash = tResourcesAccessory.GetSystemCommonCash(sysComCashResources);
 
             var g = Instantiate(levelPrefabs[sysComCash[EnumSystemCommonCash.SceneId]], Vector3.zero, Quaternion.identity, level);
             if (g != null)

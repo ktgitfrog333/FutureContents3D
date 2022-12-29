@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using Select.Common;
-using Select.Template;
+using Main.Common;
+using Main.Template;
 
-namespace Select.Audio
+namespace Main.Audio
 {
     /// <summary>
     /// オーディオミキサー
     /// </summary>
-    public class AudioMixerController : MonoBehaviour, ISelectGameManager
+    [RequireComponent(typeof(AudioMixer))]
+    public class AudioMixerController : MonoBehaviour, IMainGameManager
     {
         /// <summary>ミキサー</summary>
         [SerializeField] private AudioMixer audioMixer;
@@ -19,9 +20,9 @@ namespace Select.Audio
 
         public void OnStart()
         {
-            var tSResources = new SelectTemplateResourcesAccessory();
-            var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
-            var configMap = tSResources.GetSystemConfig(datas);
+            var tMResources = new MainTemplateResourcesAccessory();
+            var datas = tMResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
+            var configMap = tMResources.GetSystemConfig(datas);
             if (!OutPutAudios(configMap[EnumSystemConfig.BGMVolumeIndex], ConstAudioMixerGroupsNames.GROUP_NAME_BGM))
                 Debug.LogError($"{ConstAudioMixerGroupsNames.GROUP_NAME_BGM}設定呼び出しの失敗");
             if (!OutPutAudios(configMap[EnumSystemConfig.SEVolumeIndex], ConstAudioMixerGroupsNames.GROUP_NAME_SE))

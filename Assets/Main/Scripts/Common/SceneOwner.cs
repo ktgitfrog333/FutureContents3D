@@ -9,12 +9,17 @@ namespace Main.Common
     /// <summary>
     /// シーンオーナー
     /// </summary>
-    public class SceneOwner : MonoBehaviour
+    public class SceneOwner : MonoBehaviour, IMainGameManager
     {
         /// <summary>次のシーン名</summary>
         [SerializeField] private string nextSceneName = "MainScene";
         /// <summary>前のシーン名</summary>
         [SerializeField] private string backSceneName = "SelectScene";
+
+        public void OnStart()
+        {
+            new MainTemplateResourcesAccessory().Initialize();
+        }
 
         /// <summary>
         /// シーンIDを取得
@@ -24,13 +29,36 @@ namespace Main.Common
         {
             try
             {
-                var tSResources = new MainTemplateResourcesAccessory();
-                tSResources.Initialize();
-                var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
+                var tMResources = new MainTemplateResourcesAccessory();
+                tMResources.Initialize();
+                var datas = tMResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
                 if (datas == null)
                     throw new System.Exception("リソース読み込みの失敗");
 
-                return tSResources.GetSystemConfig(datas);
+                return tMResources.GetSystemCommonCash(datas);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// ステージクリア済みデータを取得
+        /// </summary>
+        /// <returns>ステージクリア済みデータ</returns>
+        public Dictionary<EnumMainSceneStagesCleared, int>[] GetMainSceneStagesCleared()
+        {
+            try
+            {
+                var tMResources = new MainTemplateResourcesAccessory();
+                tMResources.Initialize();
+                var datas = tMResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED);
+                if (datas == null)
+                    throw new System.Exception("リソース読み込みの失敗");
+
+                return tMResources.GetMainSceneStagesCleared(datas);
             }
             catch (System.Exception e)
             {
@@ -70,10 +98,31 @@ namespace Main.Common
         {
             try
             {
-                var tSResources = new MainTemplateResourcesAccessory();
+                var tMResources = new MainTemplateResourcesAccessory();
                 if (configMap == null)
                     throw new System.Exception("設定データがnull");
-                if (!tSResources.SaveDatasCSVOfSystemConfig(ConstResorcesNames.SYSTEM_COMMON_CASH, configMap))
+                if (!tMResources.SaveDatasCSVOfSystemCommonCash(ConstResorcesNames.SYSTEM_COMMON_CASH, configMap))
+                    Debug.LogError("CSV保存呼び出しの失敗");
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// ステージクリア済みデータの保存
+        /// </summary>
+        /// <returns>成功／失敗</returns>
+        public bool SaveMainSceneStagesCleared(Dictionary<EnumMainSceneStagesCleared, int>[] configMaps)
+        {
+            try
+            {
+                var tMResources = new MainTemplateResourcesAccessory();
+                if (!tMResources.SaveDatasCSVOfMainSceneStagesCleared(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED, configMaps))
                     Debug.LogError("CSV保存呼び出しの失敗");
 
                 return true;

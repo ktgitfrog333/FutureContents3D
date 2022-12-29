@@ -109,7 +109,7 @@ namespace Title.Audio
         {
             try
             {
-                //5段階補正
+                //x段階補正
                 value /= volumeSpan;
                 //-80~0に変換
                 var volume = Mathf.Clamp(Mathf.Log10(value) * 20f, -80f, 0f);

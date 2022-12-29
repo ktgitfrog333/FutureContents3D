@@ -304,6 +304,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sfxPlayer: {fileID: 1369696455142536827}
   bgmPlayer: {fileID: 1369696455142536825}
+  audioMixer: {fileID: 2059419336}
 --- !u!1 &1369696454755293852
 GameObject:
   m_ObjectHideFlags: 0
@@ -449,6 +450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: e4ec12b200fbd4e4e9b0ce04557f8f86, type: 2}
+  volumeSpan: 10
 --- !u!1 &1369696455080593797
 GameObject:
   m_ObjectHideFlags: 0

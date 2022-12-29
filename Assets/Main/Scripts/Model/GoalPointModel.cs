@@ -12,10 +12,10 @@ namespace Main.Model
     /// </summary>
     public class GoalPointModel : LevelPhysicsSerializerCapsule
     {
-        /// <summary>トリガーから出る</summary>
-        private readonly BoolReactiveProperty _isTriggerExited = new BoolReactiveProperty();
-        /// <summary>トリガーから出る</summary>
-        public IReactiveProperty<bool> IsTriggerExited => _isTriggerExited;
+        /// <summary>トリガーへ入る</summary>
+        private readonly BoolReactiveProperty _isTriggerEntered = new BoolReactiveProperty();
+        /// <summary>トリガーへ入る</summary>
+        public IReactiveProperty<bool> IsTriggerEntered => _isTriggerEntered;
         /// <summary>トランスフォーム</summary>
         private Transform _transform;
 
@@ -33,7 +33,7 @@ namespace Main.Model
         {
             if (other.CompareTag(ConstTagNames.TAG_NAME_PLAYER))
             {
-                _isTriggerExited.Value = true;
+                _isTriggerEntered.Value = true;
             }
         }
 

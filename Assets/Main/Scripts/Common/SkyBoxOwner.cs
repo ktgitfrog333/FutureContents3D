@@ -18,7 +18,7 @@ namespace Main.Common
             var tResourcesAccessory = new MainTemplateResourcesAccessory();
             // ステージIDの取得
             var sysComCashResources = tResourcesAccessory.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
-            var sysComCash = tResourcesAccessory.GetSystemConfig(sysComCashResources);
+            var sysComCash = tResourcesAccessory.GetSystemCommonCash(sysComCashResources);
             // ステージ共通設定の取得
             var mainSceneStagesConfResources = tResourcesAccessory.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CONFIG);
             var mainSceneStagesConfs = tResourcesAccessory.GetMainSceneStagesConfig(mainSceneStagesConfResources);

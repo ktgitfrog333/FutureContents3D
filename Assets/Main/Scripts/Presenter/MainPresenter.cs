@@ -230,6 +230,8 @@ namespace Main.Presenter
                     }
                 });
             // クリア画面表示のため、ゴール到達のフラグ更新
+            var currentStageDic = MainGameManager.Instance.SceneOwner.GetSystemCommonCash();
+            var mainSceneStagesCleared = MainGameManager.Instance.SceneOwner.GetMainSceneStagesCleared();
             var isGoalReached = new BoolReactiveProperty();
             isGoalReached.ObserveEveryValueChanged(x => x.Value)
                 .Subscribe(async x =>
@@ -237,6 +239,10 @@ namespace Main.Presenter
                     if (x)
                     {
                         MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.me_game_clear);
+                        // クリア済みデータの更新
+                        mainSceneStagesCleared[currentStageDic[EnumSystemCommonCash.SceneId]][EnumMainSceneStagesCleared.Cleared] = 1;
+                        if (!MainGameManager.Instance.SceneOwner.SaveMainSceneStagesCleared(mainSceneStagesCleared))
+                            Debug.LogError("クリア済みデータ保存呼び出しの失敗");
                         // 初期処理
                         clearView.gameObject.SetActive(true);
                         stageClearView.gameObject.SetActive(true);
@@ -255,7 +261,6 @@ namespace Main.Presenter
                         gameProceedButtonModel.SetSelectedGameObject();
                     }
                 });
-            var currentStageDic = MainGameManager.Instance.SceneOwner.GetSystemCommonCash();
 
             // クリア画面 -> 次のステージへ進む
             gameProceedButtonModel.EventState.ObserveEveryValueChanged(x => x.Value)
@@ -618,7 +623,7 @@ namespace Main.Presenter
                         var goalPointObj = GameObject.Find(ConstGameObjectNames.GAMEOBJECT_NAME_GOALPOINT);
                         goalPointView = goalPointObj.GetComponent<GoalPointView>();
                         goalPointModel = goalPointObj.GetComponent<GoalPointModel>();
-                        goalPointModel.IsTriggerExited.ObserveEveryValueChanged(x => x.Value)
+                        goalPointModel.IsTriggerEntered.ObserveEveryValueChanged(x => x.Value)
                             .Subscribe(x =>
                             {
                                 if (x)
