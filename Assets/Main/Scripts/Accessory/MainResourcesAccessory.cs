@@ -216,14 +216,14 @@ namespace Main.Accessory
         /// </summary>
         /// <param name="datas">二次元配列の文字列データ</param>
         /// <returns>格納オブジェクト配列</returns>
-        public Dictionary<EnumMainSceneStagesCleared, int>[] GetMainSceneStagesCleared(List<string[]> datas)
+        public Dictionary<EnumMainSceneStagesState, int>[] GetMainSceneStagesState(List<string[]> datas)
         {
             try
             {
-                var configMapList = new List<Dictionary<EnumMainSceneStagesCleared, int>>();
+                var configMapList = new List<Dictionary<EnumMainSceneStagesState, int>>();
                 // 配列のインデックスとステージIDを揃えるため、0番目はダミーデータを格納
-                var dummy = new Dictionary<EnumMainSceneStagesCleared, int>();
-                dummy[EnumMainSceneStagesCleared.Cleared] = -1;
+                var dummy = new Dictionary<EnumMainSceneStagesState, int>();
+                dummy[EnumMainSceneStagesState.State] = -1;
                 configMapList.Add(dummy);
                 for (var i = 0; i < datas.Count; i++)
                 {
@@ -233,8 +233,8 @@ namespace Main.Accessory
                     var child = datas[i];
                     for (var j = 0; j < child.Length; j++)
                     {
-                        var configMap = new Dictionary<EnumMainSceneStagesCleared, int>();
-                        configMap[(EnumMainSceneStagesCleared)j] = int.Parse(child[j]);
+                        var configMap = new Dictionary<EnumMainSceneStagesState, int>();
+                        configMap[(EnumMainSceneStagesState)j] = int.Parse(child[j]);
                         configMapList.Add(configMap);
                     }
                 }
@@ -286,7 +286,7 @@ namespace Main.Accessory
         /// <param name="resourcesLoadName">リソースCSVファイル名</param>
         /// <param name="configMaps">格納オブジェクト配列</param>
         /// <returns>成功／失敗</returns>
-        public bool SaveDatasCSVOfMainSceneStagesCleared(string resourcesLoadName, Dictionary<EnumMainSceneStagesCleared, int>[] configMaps)
+        public bool SaveDatasCSVOfMainSceneStagesState(string resourcesLoadName, Dictionary<EnumMainSceneStagesState, int>[] configMaps)
         {
             try
             {
@@ -335,7 +335,7 @@ namespace Main.Accessory
         /// </summary>
         /// <param name="configMap">格納オブジェクト</param>
         /// <returns>CSVのタイトル箇所</returns>
-        private string[] GetKeysRecord(Dictionary<EnumMainSceneStagesCleared, int> configMap)
+        private string[] GetKeysRecord(Dictionary<EnumMainSceneStagesState, int> configMap)
         {
             return configMap.Select(q => q.Key + "").ToArray();
         }
@@ -355,7 +355,7 @@ namespace Main.Accessory
         /// </summary>
         /// <param name="configMap">格納オブジェクト</param>
         /// <returns>一行分のレコード</returns>
-        private string[] GetValuesRecord(Dictionary<EnumMainSceneStagesCleared, int> configMap)
+        private string[] GetValuesRecord(Dictionary<EnumMainSceneStagesState, int> configMap)
         {
             return configMap.Select(q => q.Value + "").ToArray();
         }

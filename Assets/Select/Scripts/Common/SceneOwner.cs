@@ -48,17 +48,17 @@ namespace Select.Common
         /// ステージクリア済みデータを取得
         /// </summary>
         /// <returns>ステージクリア済みデータ</returns>
-        public Dictionary<EnumMainSceneStagesCleared, int>[] GetMainSceneStagesCleared()
+        public Dictionary<EnumMainSceneStagesState, int>[] GetMainSceneStagesState()
         {
             try
             {
                 var tSResources = new SelectTemplateResourcesAccessory();
                 tSResources.Initialize();
-                var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED);
+                var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
                 if (datas == null)
                     throw new System.Exception("リソース読み込みの失敗");
 
-                return tSResources.GetMainSceneStagesCleared(datas);
+                return tSResources.GetMainSceneStagesState(datas);
             }
             catch (System.Exception e)
             {

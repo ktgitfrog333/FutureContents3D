@@ -38,18 +38,42 @@ namespace Select.Model
         private Button _button;
         /// <summary>イベントトリガー</summary>
         private EventTrigger _eventTrigger;
-        /// <summary>ステージクリア済み</summary>
-        private readonly BoolReactiveProperty isCleared = new BoolReactiveProperty();
-        /// <summary>ステージクリア済み</summary>
-        public IReactiveProperty<bool> IsCleared => isCleared;
+        /// <summary>ステージの状態</summary>
+        private readonly IntReactiveProperty stageState = new IntReactiveProperty();
+        /// <summary>ステージの状態</summary>
+        public IReactiveProperty<int> StageState => stageState;
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            if (SelectGameManager.Instance != null)
+        }
+
+        /// <summary>
+        /// ステージ状態のロード及びナビゲーション更新
+        /// </summary>
+        /// <returns>成功／失敗</returns>
+        public bool LoadStateAndUpdateNavigation()
+        {
+            try
             {
-                var mainSceneStagesCleared = SelectGameManager.Instance.SceneOwner.GetMainSceneStagesCleared();
-                isCleared.Value = mainSceneStagesCleared[Index][EnumMainSceneStagesCleared.Cleared] == 1;
+                var mainSceneStagesState = SelectGameManager.Instance.SceneOwner.GetMainSceneStagesState();
+                stageState.Value = mainSceneStagesState[Index][EnumMainSceneStagesState.State];
+                // 未クリアの場合次のステージへナビゲーションしない
+                if (stageState.Value != 2)
+                {
+                    if (_button == null)
+                        _button = GetComponent<Button>();
+                    Navigation navigation = _button.navigation;
+                    navigation.selectOnRight = null;
+                    _button.navigation = navigation;
+                }
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return false;
             }
         }
 

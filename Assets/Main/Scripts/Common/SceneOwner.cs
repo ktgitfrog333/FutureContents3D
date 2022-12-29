@@ -48,17 +48,17 @@ namespace Main.Common
         /// ステージクリア済みデータを取得
         /// </summary>
         /// <returns>ステージクリア済みデータ</returns>
-        public Dictionary<EnumMainSceneStagesCleared, int>[] GetMainSceneStagesCleared()
+        public Dictionary<EnumMainSceneStagesState, int>[] GetMainSceneStagesState()
         {
             try
             {
                 var tMResources = new MainTemplateResourcesAccessory();
                 tMResources.Initialize();
-                var datas = tMResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED);
+                var datas = tMResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
                 if (datas == null)
                     throw new System.Exception("リソース読み込みの失敗");
 
-                return tMResources.GetMainSceneStagesCleared(datas);
+                return tMResources.GetMainSceneStagesState(datas);
             }
             catch (System.Exception e)
             {
@@ -117,12 +117,12 @@ namespace Main.Common
         /// ステージクリア済みデータの保存
         /// </summary>
         /// <returns>成功／失敗</returns>
-        public bool SaveMainSceneStagesCleared(Dictionary<EnumMainSceneStagesCleared, int>[] configMaps)
+        public bool SaveMainSceneStagesState(Dictionary<EnumMainSceneStagesState, int>[] configMaps)
         {
             try
             {
                 var tMResources = new MainTemplateResourcesAccessory();
-                if (!tMResources.SaveDatasCSVOfMainSceneStagesCleared(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED, configMaps))
+                if (!tMResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, configMaps))
                     Debug.LogError("CSV保存呼び出しの失敗");
 
                 return true;

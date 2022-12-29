@@ -112,6 +112,8 @@ namespace Select.Presenter
                 {
                     child.SetButtonEnabled(false);
                     child.SetEventTriggerEnabled(false);
+                    if (!child.LoadStateAndUpdateNavigation())
+                        Debug.LogError("ステージ状態のロード及びナビゲーション更新呼び出しの失敗");
                 }
             foreach (var child in pageViews)
                 if (child != null)
@@ -143,13 +145,28 @@ namespace Select.Presenter
                     // 0番目は空データのためスキップ
                     continue;
                 var idx = i;
-                logoStageModels[idx].IsCleared.ObserveEveryValueChanged(x => x.Value)
+                logoStageModels[idx].StageState.ObserveEveryValueChanged(x => x.Value)
                     .Subscribe(x =>
                     {
-                        if (x)
+                        switch (x)
                         {
-                            if (!logoStageViews[idx].RenderClearMark())
-                                Debug.LogError("クリア済みマーク表示呼び出しの失敗");
+                            case -1:
+                                // 処理無し
+                                break;
+                            case 0:
+                                if (!logoStageViews[idx].RenderDisableMark())
+                                    Debug.LogError("選択不可マーク表示呼び出しの失敗");
+                                break;
+                            case 1:
+                                // 選択可
+                                break;
+                            case 2:
+                                if (!logoStageViews[idx].RenderClearMark())
+                                    Debug.LogError("クリア済みマーク表示呼び出しの失敗");
+                                break;
+                            default:
+                                Debug.LogWarning("例外ケース");
+                                break;
                         }
                     });
             }

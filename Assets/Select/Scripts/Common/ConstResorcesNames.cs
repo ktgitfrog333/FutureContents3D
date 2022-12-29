@@ -16,7 +16,7 @@ namespace Select.Common
         /// <summary>システム設定キャッシュ</summary>
         public static readonly string SYSTEM_COMMON_CASH = "SystemCommonCash";
         /// <summary>ステージクリア済みデータ</summary>
-        public static readonly string MAIN_SCENE_STAGES_CLEARED = "MainSceneStagesCleared";
+        public static readonly string MAIN_SCENE_STAGES_STATE = "MainSceneStagesState";
         /// <summary>システム設定</summary>
         public static readonly string SYSTEM_CONFIG = "SystemConfig";
     }

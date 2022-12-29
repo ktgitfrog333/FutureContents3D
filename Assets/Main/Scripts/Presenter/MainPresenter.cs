@@ -231,7 +231,7 @@ namespace Main.Presenter
                 });
             // クリア画面表示のため、ゴール到達のフラグ更新
             var currentStageDic = MainGameManager.Instance.SceneOwner.GetSystemCommonCash();
-            var mainSceneStagesCleared = MainGameManager.Instance.SceneOwner.GetMainSceneStagesCleared();
+            var mainSceneStagesState = MainGameManager.Instance.SceneOwner.GetMainSceneStagesState();
             var isGoalReached = new BoolReactiveProperty();
             isGoalReached.ObserveEveryValueChanged(x => x.Value)
                 .Subscribe(async x =>
@@ -240,8 +240,10 @@ namespace Main.Presenter
                     {
                         MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.me_game_clear);
                         // クリア済みデータの更新
-                        mainSceneStagesCleared[currentStageDic[EnumSystemCommonCash.SceneId]][EnumMainSceneStagesCleared.Cleared] = 1;
-                        if (!MainGameManager.Instance.SceneOwner.SaveMainSceneStagesCleared(mainSceneStagesCleared))
+                        mainSceneStagesState[currentStageDic[EnumSystemCommonCash.SceneId]][EnumMainSceneStagesState.State] = 2;
+                        if (currentStageDic[EnumSystemCommonCash.SceneId] < mainSceneStagesState.Length - 1)
+                            mainSceneStagesState[(currentStageDic[EnumSystemCommonCash.SceneId] + 1)][EnumMainSceneStagesState.State] = 1;
+                        if (!MainGameManager.Instance.SceneOwner.SaveMainSceneStagesState(mainSceneStagesState))
                             Debug.LogError("クリア済みデータ保存呼び出しの失敗");
                         // 初期処理
                         clearView.gameObject.SetActive(true);

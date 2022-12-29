@@ -77,7 +77,7 @@ namespace Title.Test
             Debug.Log("---OnClicked---");
             var tTResources = new TitleTemplateResourcesAccessory();
             Debug.Log("---LoadSaveDatasCSV---");
-            var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED);
+            var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
             if (datas == null)
                 throw new System.Exception("リソース読み込みの失敗");
             for (var i = 0; i < datas.Count; i++)
@@ -88,7 +88,7 @@ namespace Title.Test
                 }
             }
             Debug.Log("---GetMainSceneStagesCleared---");
-            var configMaps = tTResources.GetMainSceneStagesCleared(datas);
+            var configMaps = tTResources.GetMainSceneStagesState(datas);
             foreach (var configMap in configMaps)
             {
                 foreach (var map in configMap)
@@ -97,9 +97,9 @@ namespace Title.Test
                 }
             }
             Debug.Log("---SaveDatasCSVOfMainSceneStagesCleared---");
-            configMaps[1][EnumMainSceneStagesCleared.Cleared] = inputMainSceneStagesCleared[1];
-            configMaps[2][EnumMainSceneStagesCleared.Cleared] = inputMainSceneStagesCleared[2];
-            if (!tTResources.SaveDatasCSVOfMainSceneStagesCleared(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED, configMaps))
+            configMaps[1][EnumMainSceneStagesState.State] = inputMainSceneStagesCleared[1];
+            configMaps[2][EnumMainSceneStagesState.State] = inputMainSceneStagesCleared[2];
+            if (!tTResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, configMaps))
                 Debug.LogError("CSV保存呼び出しの失敗");
         }
 
@@ -108,7 +108,7 @@ namespace Title.Test
             Debug.Log("---OnClicked---");
             var tTResources = new TitleTemplateResourcesAccessory();
             Debug.Log("---LoadResourcesCSV---");
-            var datas = tTResources.LoadResourcesCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED);
+            var datas = tTResources.LoadResourcesCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
             //if (datas == null)
             //    throw new System.Exception("リソース読み込みの失敗");
             //for (var i = 0; i < datas.Count; i++)
@@ -119,7 +119,7 @@ namespace Title.Test
             //    }
             //}
             Debug.Log("---GetMainSceneStagesCleared---");
-            var configMaps = tTResources.GetMainSceneStagesCleared(datas);
+            var configMaps = tTResources.GetMainSceneStagesState(datas);
             //foreach (var configMap in configMaps)
             //{
             //    foreach (var map in configMap)
@@ -128,7 +128,7 @@ namespace Title.Test
             //    }
             //}
             Debug.Log("---SaveDatasCSVOfMainSceneStagesCleared---");
-            if (!tTResources.SaveDatasCSVOfMainSceneStagesCleared(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED, configMaps))
+            if (!tTResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, configMaps))
                 Debug.LogError("CSV保存呼び出しの失敗");
         }
     }

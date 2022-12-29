@@ -30,9 +30,9 @@ namespace Select.Accessory
                 using (File.Create($"{GetHomePath()}{ConstResorcesNames.SYSTEM_COMMON_CASH}.csv")) { }
             }
             // ステージクリア済みデータが存在しない場合は作成
-            if (!File.Exists($"{GetHomePath()}{ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED}.csv"))
+            if (!File.Exists($"{GetHomePath()}{ConstResorcesNames.MAIN_SCENE_STAGES_STATE}.csv"))
             {
-                using (File.Create($"{GetHomePath()}{ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED}.csv")) { }
+                using (File.Create($"{GetHomePath()}{ConstResorcesNames.MAIN_SCENE_STAGES_STATE}.csv")) { }
             }
             // システム設定が存在しない場合は作成
             if (!File.Exists($"{GetHomePath()}{ConstResorcesNames.SYSTEM_CONFIG}.csv"))
@@ -188,14 +188,14 @@ namespace Select.Accessory
         /// </summary>
         /// <param name="datas">二次元配列の文字列データ</param>
         /// <returns>格納オブジェクト配列</returns>
-        public Dictionary<EnumMainSceneStagesCleared, int>[] GetMainSceneStagesCleared(List<string[]> datas)
+        public Dictionary<EnumMainSceneStagesState, int>[] GetMainSceneStagesState(List<string[]> datas)
         {
             try
             {
-                var configMapList = new List<Dictionary<EnumMainSceneStagesCleared, int>>();
+                var configMapList = new List<Dictionary<EnumMainSceneStagesState, int>>();
                 // 配列のインデックスとステージIDを揃えるため、0番目はダミーデータを格納
-                var dummy = new Dictionary<EnumMainSceneStagesCleared, int>();
-                dummy[EnumMainSceneStagesCleared.Cleared] = -1;
+                var dummy = new Dictionary<EnumMainSceneStagesState, int>();
+                dummy[EnumMainSceneStagesState.State] = -1;
                 configMapList.Add(dummy);
                 for (var i = 0; i < datas.Count; i++)
                 {
@@ -205,8 +205,8 @@ namespace Select.Accessory
                     var child = datas[i];
                     for (var j = 0; j < child.Length; j++)
                     {
-                        var configMap = new Dictionary<EnumMainSceneStagesCleared, int>();
-                        configMap[(EnumMainSceneStagesCleared)j] = int.Parse(child[j]);
+                        var configMap = new Dictionary<EnumMainSceneStagesState, int>();
+                        configMap[(EnumMainSceneStagesState)j] = int.Parse(child[j]);
                         configMapList.Add(configMap);
                     }
                 }

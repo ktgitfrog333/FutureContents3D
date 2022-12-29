@@ -65,9 +65,9 @@ namespace Main.Template
         /// </summary>
         /// <param name="datas">二次元配列の文字列データ</param>
         /// <returns>格納オブジェクト配列</returns>
-        public Dictionary<EnumMainSceneStagesCleared, int>[] GetMainSceneStagesCleared(List<string[]> datas)
+        public Dictionary<EnumMainSceneStagesState, int>[] GetMainSceneStagesState(List<string[]> datas)
         {
-            return new MainResourcesAccessory().GetMainSceneStagesCleared(datas);
+            return new MainResourcesAccessory().GetMainSceneStagesState(datas);
         }
 
         /// <summary>
@@ -87,9 +87,9 @@ namespace Main.Template
         /// <param name="resourcesLoadName">リソースCSVファイル名</param>
         /// <param name="configMaps">格納オブジェクト配列</param>
         /// <returns>成功／失敗</returns>
-        public bool SaveDatasCSVOfMainSceneStagesCleared(string resourcesLoadName, Dictionary<EnumMainSceneStagesCleared, int>[] configMaps)
+        public bool SaveDatasCSVOfMainSceneStagesState(string resourcesLoadName, Dictionary<EnumMainSceneStagesState, int>[] configMaps)
         {
-            return new MainResourcesAccessory().SaveDatasCSVOfMainSceneStagesCleared(resourcesLoadName, configMaps);
+            return new MainResourcesAccessory().SaveDatasCSVOfMainSceneStagesState(resourcesLoadName, configMaps);
         }
     }
 }

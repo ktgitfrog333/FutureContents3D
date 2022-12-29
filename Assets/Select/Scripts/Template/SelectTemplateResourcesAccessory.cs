@@ -55,9 +55,9 @@ namespace Select.Template
         /// </summary>
         /// <param name="datas">二次元配列の文字列データ</param>
         /// <returns>格納オブジェクト配列</returns>
-        public Dictionary<EnumMainSceneStagesCleared, int>[] GetMainSceneStagesCleared(List<string[]> datas)
+        public Dictionary<EnumMainSceneStagesState, int>[] GetMainSceneStagesState(List<string[]> datas)
         {
-            return new SelectResourcesAccessory().GetMainSceneStagesCleared(datas);
+            return new SelectResourcesAccessory().GetMainSceneStagesState(datas);
         }
 
         /// <summary>

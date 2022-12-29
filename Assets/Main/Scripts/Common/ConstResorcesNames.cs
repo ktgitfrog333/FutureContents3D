@@ -20,6 +20,6 @@ namespace Main.Common
         /// <summary>ステージ設定</summary>
         public static readonly string MAIN_SCENE_STAGES_CONFIG = "MainSceneStagesConfig";
         /// <summary>ステージクリア済みデータ</summary>
-        public static readonly string MAIN_SCENE_STAGES_CLEARED = "MainSceneStagesCleared";
+        public static readonly string MAIN_SCENE_STAGES_STATE = "MainSceneStagesState";
     }
 }

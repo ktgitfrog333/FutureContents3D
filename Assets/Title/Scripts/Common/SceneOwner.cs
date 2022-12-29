@@ -23,14 +23,14 @@ namespace Title.Common
         /// ステージクリア済みデータの削除
         /// </summary>
         /// <returns>成功／失敗</returns>
-        public bool DestroyMainSceneStagesCleared()
+        public bool DestroyMainSceneStagesState()
         {
             try
             {
                 var tTResources = new TitleTemplateResourcesAccessory();
-                var datas = tTResources.LoadResourcesCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED);
-                var configMaps = tTResources.GetMainSceneStagesCleared(datas);
-                if (!tTResources.SaveDatasCSVOfMainSceneStagesCleared(ConstResorcesNames.MAIN_SCENE_STAGES_CLEARED, configMaps))
+                var datas = tTResources.LoadResourcesCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
+                var configMaps = tTResources.GetMainSceneStagesState(datas);
+                if (!tTResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, configMaps))
                     Debug.LogError("CSV保存呼び出しの失敗");
 
                 return true;
