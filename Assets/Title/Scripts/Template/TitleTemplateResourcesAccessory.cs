@@ -31,6 +31,16 @@ namespace Title.Template
         }
 
         /// <summary>
+        /// タイトルカラム名を含むCSVリソースの取得
+        /// </summary>
+        /// <param name="resourcesLoadName">リソースCSVファイル名</param>
+        /// <returns>二次元配列の文字列データ</returns>
+        public List<string[]> LoadResourcesCSV(string resourcesLoadName)
+        {
+            return new TitleResourcesAccessory().LoadResourcesCSV(resourcesLoadName);
+        }
+
+        /// <summary>
         /// システムオプション設定をオブジェクトへ一時セット
         /// </summary>
         /// <param name="datas">二次元配列の文字列データ</param>
@@ -38,6 +48,16 @@ namespace Title.Template
         public Dictionary<EnumSystemConfig, int> GetSystemConfig(List<string[]> datas)
         {
             return new TitleResourcesAccessory().GetSystemConfig(datas);
+        }
+
+        /// <summary>
+        /// ステージクリア済みデータをオブジェクトへ一時セット
+        /// </summary>
+        /// <param name="datas">二次元配列の文字列データ</param>
+        /// <returns>格納オブジェクト配列</returns>
+        public Dictionary<EnumMainSceneStagesCleared, int>[] GetMainSceneStagesCleared(List<string[]> datas)
+        {
+            return new TitleResourcesAccessory().GetMainSceneStagesCleared(datas);
         }
 
         /// <summary>
@@ -49,6 +69,17 @@ namespace Title.Template
         public bool SaveDatasCSVOfSystemConfig(string resourcesLoadName, Dictionary<EnumSystemConfig, int> configMap)
         {
             return new TitleResourcesAccessory().SaveDatasCSVOfSystemConfig(resourcesLoadName, configMap);
+        }
+
+        /// <summary>
+        /// ステージクリア済みデータをCSVデータへ保存
+        /// </summary>
+        /// <param name="resourcesLoadName">リソースCSVファイル名</param>
+        /// <param name="configMaps">格納オブジェクト配列</param>
+        /// <returns>成功／失敗</returns>
+        public bool SaveDatasCSVOfMainSceneStagesCleared(string resourcesLoadName, Dictionary<EnumMainSceneStagesCleared, int>[] configMaps)
+        {
+            return new TitleResourcesAccessory().SaveDatasCSVOfMainSceneStagesCleared(resourcesLoadName, configMaps);
         }
     }
 }

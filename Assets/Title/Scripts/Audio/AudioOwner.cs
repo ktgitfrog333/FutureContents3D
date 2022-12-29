@@ -14,16 +14,20 @@ namespace Title.Audio
         [SerializeField] private SfxPlayer sfxPlayer;
         /// <summary>BGMのプレイヤー</summary>
         [SerializeField] private BgmPlayer bgmPlayer;
+        /// <summary>オーディオミキサー</summary>
+        [SerializeField] private AudioMixerController audioMixer;
 
         private void Reset()
         {
             sfxPlayer = GameObject.Find("SfxPlayer").GetComponent<SfxPlayer>();
             bgmPlayer = GameObject.Find("BgmPlayer").GetComponent<BgmPlayer>();
+            audioMixer = GameObject.Find("AudioMixer").GetComponent<AudioMixerController>();
         }
 
         public void OnStart()
         {
             sfxPlayer.OnStart();
+            audioMixer.OnStart();
         }
 
         public void PlaySFX(ClipToPlay clipToPlay)
@@ -34,6 +38,35 @@ namespace Title.Audio
         public void PlayBGM(ClipToPlayBGM clipToPlay)
         {
             bgmPlayer.PlayBGM(clipToPlay);
+        }
+
+        /// <summary>
+        /// ボリュームをセット
+        /// </summary>
+        /// <param name="configMap">システム設定</param>
+        /// <returns>成功／失敗</returns>
+        public bool SetVolume(Dictionary<EnumSystemConfig, int> configMap)
+        {
+            return audioMixer.SetVolume(configMap);
+        }
+
+        /// <summary>
+        /// オーディオ情報をリロード
+        /// </summary>
+        /// <returns>成功／失敗</returns>
+        public bool ReLoadAudios()
+        {
+            return audioMixer.ReLoadAudios();
+        }
+
+        /// <summary>
+        /// オーディオ情報を保存
+        /// </summary>
+        /// <param name="configMap">システム設定</param>
+        /// <returns>成功／失敗</returns>
+        public bool SaveAudios(Dictionary<EnumSystemConfig, int> configMap)
+        {
+            return audioMixer.SaveAudios(configMap);
         }
     }
 

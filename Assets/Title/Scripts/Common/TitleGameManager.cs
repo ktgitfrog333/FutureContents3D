@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Title.Presenter;
 using Title.Audio;
+using Title.InputSystem;
 
 namespace Title.Common
 {
@@ -31,6 +32,10 @@ namespace Title.Common
         [SerializeField] private CursorVisible cursorVisible;
         /// <summary>カーソル表示</summary>
         public CursorVisible CursorVisible => cursorVisible;
+        /// <summary>InputSystemのオーナー</summary>
+        [SerializeField] private InputSystemsOwner inputSystemsOwner;
+        /// <summary>InputSystemのオーナー</summary>
+        public InputSystemsOwner InputSystemsOwner => inputSystemsOwner;
 
         private void Reset()
         {
@@ -38,6 +43,7 @@ namespace Title.Common
             audioOwner = GameObject.Find("AudioOwner").GetComponent<AudioOwner>();
             sceneOwner = GameObject.Find("SceneOwner").GetComponent<SceneOwner>();
             cursorVisible = GameObject.Find("CursorVisible").GetComponent<CursorVisible>();
+            inputSystemsOwner = GameObject.Find("InputSystemsOwner").GetComponent<InputSystemsOwner>();
         }
 
         private void Awake()
@@ -51,6 +57,8 @@ namespace Title.Common
             audioOwner.OnStart();
             presenter.OnStart();
             cursorVisible.OnStart();
+            sceneOwner.OnStart();
+            inputSystemsOwner.OnStart();
         }
 
         /// <summary>

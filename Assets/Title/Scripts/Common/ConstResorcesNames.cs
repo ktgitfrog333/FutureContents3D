@@ -15,5 +15,7 @@ namespace Title.Common
         public static readonly string HOMEPATH_BUILD = @".\SaveDatas\";
         /// <summary>システム設定</summary>
         public static readonly string SYSTEM_CONFIG = "SystemConfig";
+        /// <summary>ステージクリア済みデータ</summary>
+        public static readonly string MAIN_SCENE_STAGES_CLEARED = "MainSceneStagesCleared";
     }
 }
