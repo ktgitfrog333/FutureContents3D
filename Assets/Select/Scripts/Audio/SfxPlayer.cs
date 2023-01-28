@@ -38,11 +38,12 @@ namespace Select.Audio
                     // SEを再生
                     audio.Play();
                 }
+                else
+                    throw new System.Exception($"対象のファイルが見つかりません:[{clipToPlay}]");
             }
             catch (System.Exception e)
             {
-                Debug.Log("対象のファイルが見つかりません:[" + clipToPlay + "]");
-                Debug.Log(e);
+                Debug.LogWarning(e);
             }
         }
 

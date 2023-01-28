@@ -45,7 +45,6 @@ namespace Title.Common
         /// <summary>
         /// シーン読み込み
         /// </summary>
-        /// <param name="name">シーン名</param>
         public void LoadNextScene()
         {
             SceneManager.LoadScene(nextSceneName);

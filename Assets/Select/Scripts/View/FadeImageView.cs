@@ -18,7 +18,7 @@ namespace Select.View
         /// <summary>終了時間</summary>
         [SerializeField] private float duration = 2.0f;
         /// <summary>イメージ</summary>
-        [SerializeField] Image image;
+        [SerializeField] private Image image;
 
         private void Reset()
         {

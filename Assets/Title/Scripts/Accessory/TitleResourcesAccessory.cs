@@ -29,6 +29,11 @@ namespace Title.Accessory
             {
                 using (File.Create($"{GetHomePath()}{ConstResorcesNames.SYSTEM_CONFIG}.csv")) { }
             }
+            // ステージクリア済みデータが存在しない場合は作成
+            if (!File.Exists($"{GetHomePath()}{ConstResorcesNames.MAIN_SCENE_STAGES_STATE}.csv"))
+            {
+                using (File.Create($"{GetHomePath()}{ConstResorcesNames.MAIN_SCENE_STAGES_STATE}.csv")) { }
+            }
         }
 
         /// <summary>
