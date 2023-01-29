@@ -33,11 +33,11 @@ namespace Title.Model
         /// </summary>
         public IReactiveProperty<int> EventState => _eventState;
         /// <summary>イベントシステム</summary>
-        private EventSystem _eventSystem;
+        protected EventSystem _eventSystem;
         /// <summary>デフォルト選択させるかフラグ</summary>
         [SerializeField] private bool defaultSelectedGameObject;
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             if (_eventSystem == null)
                 _eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();

@@ -14,14 +14,14 @@ namespace Title.Test
     /// </summary>
     public class TestTitleAudioVolume : MonoBehaviour
     {
-        [SerializeField] private Slider slider;
+        //[SerializeField] private Slider slider;
         [SerializeField] private TestAudioMode mode;
         private Dictionary<EnumSystemConfig, int> configMap = new Dictionary<EnumSystemConfig, int>();
 
         private void Start()
         {
             TitleGameManager.Instance.AudioOwner.PlayBGM(ClipToPlayBGM.bgm_title);
-            slider.onValueChanged.AddListener(SetAudioMixer);
+            //slider.onValueChanged.AddListener(SetAudioMixer);
             var tTResources = new TitleTemplateResourcesAccessory();
             var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
             configMap = tTResources.GetSystemConfig(datas);
