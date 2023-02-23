@@ -144,6 +144,8 @@ MonoBehaviour:
   pushGameStartLogoModel: {fileID: 0}
   gameStartLogoView: {fileID: 0}
   gameStartLogoModel: {fileID: 0}
+  optionLogoView: {fileID: 0}
+  optionLogoModel: {fileID: 0}
   gameExitLogoView: {fileID: 0}
   gameExitLogoModel: {fileID: 0}
   gameExitConfirmYesLogoView: {fileID: 0}
@@ -154,6 +156,50 @@ MonoBehaviour:
   cursorIconModel: {fileID: 0}
   fadeImageView: {fileID: 0}
   fadeImageModel: {fileID: 0}
+  bgmView: {fileID: 0}
+  sliderBgmView: {fileID: 0}
+  sliderBgmModel: {fileID: 0}
+  valueBgmView: {fileID: 0}
+  sliderVolModelsBgms:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  seView: {fileID: 0}
+  sliderSeView: {fileID: 0}
+  sliderSeModel: {fileID: 0}
+  valueSeView: {fileID: 0}
+  sliderVolModelsSes:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  radioVibrationModel: {fileID: 0}
+  onVibrationModel: {fileID: 0}
+  offVibrationModel: {fileID: 0}
+  resetSaveDataModel: {fileID: 0}
+  resetConfigModel: {fileID: 0}
+  allLevelReleasedModel: {fileID: 0}
+  fixModel: {fileID: 0}
+  backModel: {fileID: 0}
+  resetSaveDataMessageView: {fileID: 0}
+  resetConfigMessageView: {fileID: 0}
+  allLevelReleasedMessageView: {fileID: 0}
+  optionCursorView: {fileID: 0}
 --- !u!1 &1163071978
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,6 +528,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8be83d6b07737bf49bf0f72b09ec286e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  leftMotor: 0.8
+  rightMotor: 0
+  delayTime: 0.3
 --- !u!1 &2159880399094193818
 GameObject:
   m_ObjectHideFlags: 0
