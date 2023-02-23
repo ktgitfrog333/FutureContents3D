@@ -13,12 +13,12 @@ namespace Title.Model
     /// モデル
     /// SEスライダー
     /// </summary>
-    [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(Slider))]
     [RequireComponent(typeof(EventTrigger))]
     public class SliderSeModel : UIEventController
     {
-        /// <summary>ボタン</summary>
-        private Button _button;
+        /// <summary>スライダー</summary>
+        private Slider _slider;
         /// <summary>イベントトリガー</summary>
         private EventTrigger _eventTrigger;
         /// <summary>ボリューム番号</summary>
@@ -32,7 +32,7 @@ namespace Title.Model
             var tTResources = new TitleTemplateResourcesAccessory();
             var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
             var configMap = tTResources.GetSystemConfig(datas);
-            _index.Value = configMap[EnumSystemConfig.BGMVolumeIndex];
+            _index.Value = configMap[EnumSystemConfig.SEVolumeIndex];
         }
 
         /// <summary>
@@ -44,7 +44,11 @@ namespace Title.Model
         {
             try
             {
-                _index.Value = index;
+                var tTValidation = new TitleTemplateOptionalInputValueValidation();
+                if (tTValidation.CheckSeValueAndGetResultState(index).Equals(EnumResponseState.Success))
+                    _index.Value = index;
+                else
+                    throw new System.Exception("値チェックのエラー");
 
                 return true;
             }
@@ -64,9 +68,9 @@ namespace Title.Model
         {
             try
             {
-                if (_button == null)
-                    _button = GetComponent<Button>();
-                _button.enabled = enabled;
+                if (_slider == null)
+                    _slider = GetComponent<Slider>();
+                _slider.enabled = enabled;
                 return true;
             }
             catch (System.Exception e)

@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Title.Common;
+using Title.Template;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,11 +28,15 @@ namespace Title.View
         /// </summary>
         /// <param name="value">値</param>
         /// <returns>成功／失敗</returns>
-        public bool SetSliderValue(float value)
+        public bool SetSliderValue(int value)
         {
             try
             {
-                _slider.value = value;
+                var tTValidation = new TitleTemplateOptionalInputValueValidation();
+                if (tTValidation.CheckSeValueAndGetResultState(value).Equals(EnumResponseState.Success))
+                    _slider.value = value;
+                else
+                    throw new System.Exception("値チェックのエラー");
 
                 return true;
             }

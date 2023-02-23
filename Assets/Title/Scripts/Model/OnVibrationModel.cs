@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Title.Common;
 
 namespace Title.Model
 {
@@ -52,6 +53,28 @@ namespace Title.Model
                 if (_eventTrigger == null)
                     _eventTrigger = GetComponent<EventTrigger>();
                 _eventTrigger.enabled = enabled;
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 自動選択する
+        /// </summary>
+        /// <returns>成功／失敗</returns>
+        public bool ManualSelect()
+        {
+            try
+            {
+                if (_eventSystem == null)
+                    _eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+                _eventSystem.SetSelectedGameObject(gameObject);
+                _eventState.Value = (int)EnumEventCommand.Selected;
 
                 return true;
             }

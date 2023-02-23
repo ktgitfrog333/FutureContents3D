@@ -8,16 +8,36 @@ namespace Title.Model
 {
     /// <summary>
     /// モデル
-    /// バイブレーション機能ラジオボタンのOFF
+    /// セーブデータ消去
     /// </summary>
     [RequireComponent(typeof(Button))]
     [RequireComponent(typeof(EventTrigger))]
-    public class OffVibrationModel : UIEventController
+    public class ResetSaveDataModel : UIEventController
     {
         /// <summary>ボタン</summary>
         private Button _button;
         /// <summary>イベントトリガー</summary>
         private EventTrigger _eventTrigger;
+        /// <summary>ボタン有効状態</summary>
+        public bool IsButtonEnabled
+        {
+            get
+            {
+                if (_button == null)
+                    _button = GetComponent<Button>();
+                return _button.enabled;
+            }
+        }
+        /// <summary>イベントトリガー有効状態</summary>
+        public bool IsEventTriggerEnabled
+        {
+            get
+            {
+                if (_eventTrigger == null)
+                    _eventTrigger = GetComponent<EventTrigger>();
+                return _eventTrigger.enabled;
+            }
+        }
 
         /// <summary>
         /// ボタンのステータスを変更

@@ -84,5 +84,27 @@ namespace Title.Model
                 return false;
             }
         }
+
+        /// <summary>
+        /// 自動選択する
+        /// </summary>
+        /// <returns>成功／失敗</returns>
+        public bool ManualSelect()
+        {
+            try
+            {
+                if (_eventSystem == null)
+                    _eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+                _eventSystem.SetSelectedGameObject(gameObject);
+                _eventState.Value = (int)EnumEventCommand.Selected;
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return false;
+            }
+        }
     }
 }

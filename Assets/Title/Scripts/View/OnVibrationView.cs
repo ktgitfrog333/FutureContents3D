@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 using Title.Common;
 
@@ -8,21 +9,19 @@ namespace Title.View
 {
     /// <summary>
     /// ビュー
-    /// SEタイトル、スライダー、設定値の表示用パネル
+    /// バイブレーション機能ラジオボタンのON
     /// </summary>
-    [RequireComponent(typeof(CanvasGroup))]
-    public class SEView : MonoBehaviour
+    [RequireComponent(typeof(Image))]
+    public class OnVibrationView : MonoBehaviour
     {
         /// <summary>終了時間</summary>
         [SerializeField] private float duration = .1f;
         /// <summary>イメージ</summary>
-        [SerializeField] private CanvasGroup canvasGroup;
-        /// <summary>透明度</summary>
-        [SerializeField] private float fadeValue = .5f;
+        [SerializeField] private Image image;
 
         private void Reset()
         {
-            canvasGroup = GetComponent<CanvasGroup>();
+            image = GetComponent<Image>();
         }
 
         /// <summary>
@@ -30,11 +29,11 @@ namespace Title.View
         /// </summary>
         /// <param name="state">ステータス</param>
         /// <returns>成功／失敗</returns>
-        public bool PlayFadeAnimation(EnumOptionContentState state)
+        public bool PlayFadeAnimation(EnumFadeState state)
         {
             try
             {
-                canvasGroup.DOFade(endValue: state.Equals(EnumOptionContentState.Selected) ? 1f : fadeValue, duration)
+                image.DOFade(endValue: state.Equals(EnumFadeState.Open) ? 0f : 1f, duration)
                     .SetUpdate(true);
 
                 return true;
