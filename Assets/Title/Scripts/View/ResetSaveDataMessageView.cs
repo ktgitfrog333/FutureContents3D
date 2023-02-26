@@ -12,11 +12,25 @@ namespace Title.View
     public class ResetSaveDataMessageView : MonoBehaviour
     {
         /// <summary>位置の配列</summary>
-        [SerializeField] private Vector3[] points = { new Vector3(0f, -50f, 0f), new Vector3(0f, 0f, 0f) };
+        [SerializeField] private Vector2[] points = new Vector2[2];
         /// <summary>終了時間の配列</summary>
         [SerializeField] private float[] durations = { .25f, 1.5f, 1.25f };
         /// <summary>トランスフォーム</summary>
         private Transform _transform;
+        /// <summary>DOTweenアニメーション管理</summary>
+        private Sequence _sequence;
+
+        private void Reset()
+        {
+            points[0] = (transform as RectTransform).anchoredPosition + Vector2.down * 50f + new Vector2(0f, (transform as RectTransform).sizeDelta.y / 2 * -1f);
+            points[1] = (transform as RectTransform).anchoredPosition;
+        }
+
+        private void OnEnable()
+        {
+            if (_sequence != null)
+                _sequence.Kill(true);
+        }
 
         /// <summary>
         /// テロップ表示アニメーション
@@ -29,12 +43,12 @@ namespace Title.View
                 _transform = transform;
             // 手前に表示させる
             _transform.SetAsLastSibling();
-            var seq = DOTween.Sequence()
-                .Append(_transform.DOLocalMove(points[0], durations[0]))
-                .Insert(durations[1], _transform.DOLocalMove(points[1], durations[2]))
+            _sequence = DOTween.Sequence()
+                .Append((_transform as RectTransform).DOAnchorPos(points[0], durations[0]))
+                .Insert(durations[1], (_transform as RectTransform).DOAnchorPos(points[1], durations[2]))
                 .SetUpdate(true)
                 .OnComplete(() => observer.OnNext(true));
-            seq.Play();
+            _sequence.Play();
 
             yield return null;
         }

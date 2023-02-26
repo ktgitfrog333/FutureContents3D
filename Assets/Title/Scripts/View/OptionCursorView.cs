@@ -15,32 +15,23 @@ namespace Title.View
         private Transform _transform;
         /// <summary>アニメーション再生時間</summary>
         [SerializeField] private float duration = .1f;
+        /// <summary>デフォルトの移動先のポジション</summary>
+        [SerializeField] private Vector3 defaultPosition;
+        /// <summary>デフォルトサイズ</summary>
+        [SerializeField] private Vector2 defaultsizeDelta;
 
-        /// <summary>
-        /// カーソル配置位置の変更
-        /// </summary>
-        /// <param name="position">移動先のポジション</param>
-        /// <param name="sizeDelta">サイズ</param>
-        /// <returns>成功／失敗</returns>
-        public bool SetSelect(Vector3 position, Vector2 sizeDelta)
+        private void Reset()
         {
-            try
-            {
-                if (isActiveAndEnabled)
-                {
-                    if (_transform == null)
-                        _transform = transform;
-                    _transform.position = position;
-                    (_transform as RectTransform).sizeDelta = sizeDelta;
-                }
+            defaultPosition = transform.position;
+            defaultsizeDelta = (transform as RectTransform).sizeDelta;
+        }
 
-                return true;
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError(e);
-                return false;
-            }
+        private void OnEnable()
+        {
+            if (_transform == null)
+                _transform = transform;
+            _transform.position = defaultPosition;
+            (_transform as RectTransform).sizeDelta = defaultsizeDelta;
         }
 
         /// <summary>

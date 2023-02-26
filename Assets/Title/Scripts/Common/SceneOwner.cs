@@ -16,7 +16,7 @@ namespace Title.Common
 
         public void OnStart()
         {
-            new TitleTemplateResourcesAccessory().Initialize();
+            new TitleTemplateResourcesAccessory();
         }
 
         /// <summary>
@@ -28,9 +28,44 @@ namespace Title.Common
             try
             {
                 var tTResources = new TitleTemplateResourcesAccessory();
-                var datas = tTResources.LoadResourcesCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
-                var configMaps = tTResources.GetMainSceneStagesState(datas);
-                if (!tTResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, configMaps))
+                // ステージクリア済みデータのリセット
+                var mainSceneStagesStateDatas = tTResources.LoadResourcesCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
+                var mainSceneStagesStateConfigMaps = tTResources.GetMainSceneStagesState(mainSceneStagesStateDatas);
+                if (!tTResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, mainSceneStagesStateConfigMaps))
+                    Debug.LogError("CSV保存呼び出しの失敗");
+                // システム設定キャッシュのリセット
+                var systemCommonCashDatas = tTResources.LoadResourcesCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
+                var systemCommonCashConfigMaps = tTResources.GetSystemCommonCash(systemCommonCashDatas);
+                if (!tTResources.SaveDatasCSVOfSystemCommonCash(ConstResorcesNames.SYSTEM_COMMON_CASH, systemCommonCashConfigMaps))
+                    Debug.LogError("CSV保存呼び出しの失敗");
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 全ステージの選択を有効にする
+        /// </summary>
+        /// <returns>成功／失敗</returns>
+        public bool AllReleasedMainSceneStagesState()
+        {
+            try
+            {
+                var tTResources = new TitleTemplateResourcesAccessory();
+                // ステージクリア済みデータのリセット
+                var mainSceneStagesStateDatas = tTResources.LoadResourcesCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE_ALL);
+                var mainSceneStagesStateConfigMaps = tTResources.GetMainSceneStagesState(mainSceneStagesStateDatas);
+                if (!tTResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, mainSceneStagesStateConfigMaps))
+                    Debug.LogError("CSV保存呼び出しの失敗");
+                // システム設定キャッシュのリセット
+                var systemCommonCashDatas = tTResources.LoadResourcesCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
+                var systemCommonCashConfigMaps = tTResources.GetSystemCommonCash(systemCommonCashDatas);
+                if (!tTResources.SaveDatasCSVOfSystemCommonCash(ConstResorcesNames.SYSTEM_COMMON_CASH, systemCommonCashConfigMaps))
                     Debug.LogError("CSV保存呼び出しの失敗");
 
                 return true;

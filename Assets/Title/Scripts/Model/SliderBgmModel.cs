@@ -30,6 +30,7 @@ namespace Title.Model
         {
             base.OnEnable();
             var tTResources = new TitleTemplateResourcesAccessory();
+            //tTResources.Initialize();
             var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
             var configMap = tTResources.GetSystemConfig(datas);
             _index.Value = configMap[EnumSystemConfig.BGMVolumeIndex];

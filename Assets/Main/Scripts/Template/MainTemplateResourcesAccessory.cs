@@ -8,14 +8,16 @@ namespace Main.Template
 {
     /// <summary>
     /// リソースアクセスのテンプレート
-    /// タイトル用
+    /// メイン用
     /// </summary>
     public class MainTemplateResourcesAccessory
     {
         /// <summary>
-        /// 初期処理
+        /// リソースアクセスのテンプレート
+        /// メイン用
+        /// コンストラクタ
         /// </summary>
-        public void Initialize()
+        public MainTemplateResourcesAccessory()
         {
             new MainResourcesAccessory().Initialize();
         }

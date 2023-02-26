@@ -10,20 +10,10 @@ namespace Title.View
     /// ビュー
     /// SEタイトル、スライダー、設定値の表示用パネル
     /// </summary>
-    [RequireComponent(typeof(CanvasGroup))]
-    public class SEView : MonoBehaviour
+    public class SEView : CanvasFadeController
     {
         /// <summary>終了時間</summary>
         [SerializeField] private float duration = .1f;
-        /// <summary>イメージ</summary>
-        [SerializeField] private CanvasGroup canvasGroup;
-        /// <summary>透明度</summary>
-        [SerializeField] private float fadeValue = .5f;
-
-        private void Reset()
-        {
-            canvasGroup = GetComponent<CanvasGroup>();
-        }
 
         /// <summary>
         /// フェードのDOTweenアニメーション再生

@@ -8,6 +8,7 @@ using Title.View;
 using Title.Common;
 using Title.Audio;
 using Title.Template;
+using System.Linq;
 
 namespace Title.Presenter
 {
@@ -69,20 +70,36 @@ namespace Title.Presenter
         [SerializeField] private ValueSeView valueSeView;
         /// <summary>SEスライダーボリュームのモデル</summary>
         [SerializeField] private SliderVolModelsSe[] sliderVolModelsSes;
+        /// <summary>バイブレーションのビュー</summary>
+        [SerializeField] private VibrationView vibrationView;
         /// <summary>バイブレーション機能ラジオボタンのモデル</summary>
         [SerializeField] private RadioVibrationModel radioVibrationModel;
+        /// <summary>バイブレーション機能ラジオボタンのONのビュー</summary>
+        [SerializeField] private OnVibrationView onVibrationView;
         /// <summary>バイブレーション機能ラジオボタンのONのモデル</summary>
         [SerializeField] private OnVibrationModel onVibrationModel;
+        /// <summary>バイブレーション機能ラジオボタンのOFFのビュー</summary>
+        [SerializeField] private OffVibrationView offVibrationView;
         /// <summary>バイブレーション機能ラジオボタンのOFFのモデル</summary>
         [SerializeField] private OffVibrationModel offVibrationModel;
+        /// <summary>セーブデータ消去ボタンのビュー</summary>
+        [SerializeField] private ResetSaveDataView resetSaveDataView;
         /// <summary>セーブデータ消去ボタンのモデル</summary>
         [SerializeField] private ResetSaveDataModel resetSaveDataModel;
+        /// <summary>オプション設定リセットのボタンのビュー</summary>
+        [SerializeField] private ResetConfigView resetConfigView;
         /// <summary>オプション設定リセットのボタンのモデル</summary>
         [SerializeField] private ResetConfigModel resetConfigModel;
+        /// <summary>全ステージ解放のビュー</summary>
+        [SerializeField] private AllLevelReleasedView allLevelReleasedView;
         /// <summary>全ステージ解放のモデル</summary>
         [SerializeField] private AllLevelReleasedModel allLevelReleasedModel;
+        /// <summary>決定ボタンのビュー</summary>
+        [SerializeField] private FixView fixView;
         /// <summary>決定ボタンのモデル</summary>
         [SerializeField] private FixModel fixModel;
+        /// <summary>戻るボタンのビュー</summary>
+        [SerializeField] private BackView backView;
         /// <summary>戻るボタンのモデル</summary>
         [SerializeField] private BackModel backModel;
         /// <summary>セーブデータ消去メッセージのビュー</summary>
@@ -93,6 +110,8 @@ namespace Title.Presenter
         [SerializeField] private AllLevelReleasedMessageView allLevelReleasedMessageView;
         /// <summary>オプション設定項目選択のカーソルのビュー</summary>
         [SerializeField] private OptionCursorView optionCursorView;
+        /// <summary>ラベルのビュー</summary>
+        [SerializeField] private LabelView[] labelViews;
 
         private void Reset()
         {
@@ -128,13 +147,21 @@ namespace Title.Presenter
             foreach (Transform child in GameObject.Find("SliderSe").transform.GetChild(3))
                 sliderVolModelsSeList.Add(child.GetComponent<SliderVolModelsSe>());
             sliderVolModelsSes = sliderVolModelsSeList.ToArray();
+            vibrationView = GameObject.Find("Vibration").GetComponent<VibrationView>();
             radioVibrationModel = GameObject.Find("RadioVibration").GetComponent<RadioVibrationModel>();
+            onVibrationView = GameObject.Find("OnVibration").GetComponent<OnVibrationView>();
             onVibrationModel = GameObject.Find("OnVibration").GetComponent<OnVibrationModel>();
+            offVibrationView = GameObject.Find("OffVibration").GetComponent<OffVibrationView>();
             offVibrationModel = GameObject.Find("OffVibration").GetComponent<OffVibrationModel>();
+            resetSaveDataView = GameObject.Find("ResetSaveData").GetComponent<ResetSaveDataView>();
             resetSaveDataModel = GameObject.Find("ResetSaveData").GetComponent<ResetSaveDataModel>();
+            resetConfigView = GameObject.Find("ResetConfig").GetComponent<ResetConfigView>();
             resetConfigModel = GameObject.Find("ResetConfig").GetComponent<ResetConfigModel>();
+            allLevelReleasedView = GameObject.Find("AllLevelReleased").GetComponent<AllLevelReleasedView>();
             allLevelReleasedModel = GameObject.Find("AllLevelReleased").GetComponent<AllLevelReleasedModel>();
+            fixView = GameObject.Find("Fix").GetComponent<FixView>();
             fixModel = GameObject.Find("Fix").GetComponent<FixModel>();
+            backView = GameObject.Find("Back").GetComponent<BackView>();
             backModel = GameObject.Find("Back").GetComponent<BackModel>();
             resetSaveDataMessageView = GameObject.Find("ResetSaveDataMsg").GetComponent<ResetSaveDataMessageView>();
             resetConfigMessageView = GameObject.Find("ResetConfigMsg").GetComponent<ResetConfigMessageView>();
@@ -216,6 +243,8 @@ namespace Title.Presenter
                         // ボタン制御を無効
                         gameStartLogoModel.SetButtonEnabled(false);
                         gameStartLogoModel.SetEventTriggerEnabled(false);
+                        optionLogoModel.SetButtonEnabled(false);
+                        optionLogoModel.SetEventTriggerEnabled(false);
                         gameExitLogoModel.SetButtonEnabled(false);
                         gameExitConfirmYesLogoModel.SetButtonEnabled(false);
                         gameExitConfirmYesLogoModel.SetEventTriggerEnabled(false);
@@ -226,6 +255,8 @@ namespace Title.Presenter
                         // ボタン制御を有効
                         gameStartLogoModel.SetButtonEnabled(true);
                         gameStartLogoModel.SetEventTriggerEnabled(true);
+                        optionLogoModel.SetButtonEnabled(true);
+                        optionLogoModel.SetEventTriggerEnabled(true);
                         gameExitLogoModel.SetButtonEnabled(true);
                         gameExitConfirmYesLogoModel.SetButtonEnabled(true);
                         gameExitConfirmYesLogoModel.SetEventTriggerEnabled(true);
@@ -266,6 +297,46 @@ namespace Title.Presenter
                             Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
                                 .Subscribe(_ => TitleGameManager.Instance.SceneOwner.LoadNextScene())
                                 .AddTo(gameObject);
+                            break;
+                        default:
+                            Debug.LogWarning("例外ケース");
+                            break;
+                    }
+                });
+            // オプションロゴ
+            optionLogoModel.EventState.ObserveEveryValueChanged(x => x.Value)
+                .Subscribe(x =>
+                {
+                    switch ((EnumEventCommand)x)
+                    {
+                        case EnumEventCommand.Default:
+                            // 処理無し
+                            break;
+                        case EnumEventCommand.Selected:
+                            if (!cursorIconView.PlaySelectAnimation(optionLogoModel.transform.position))
+                                Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            // 選択SEを再生
+                            TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
+                            break;
+                        case EnumEventCommand.DeSelected:
+                            // 処理無し
+                            break;
+                        case EnumEventCommand.Canceled:
+                            cursorIcon.SetActive(false);
+                            gameStartOrExit.SetActive(false);
+                            pushGameStart.SetActive(true);
+                            // キャンセルSEを再生
+                            TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_cancel);
+                            break;
+                        case EnumEventCommand.Submited:
+                            // 決定SEを再生
+                            TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
+                            gameStartOrExit.SetActive(false);
+                            cursorIcon.SetActive(false);
+                            option.SetActive(true);
+                            // BGMスライダーボリュームの設定値を選択する
+                            if (!sliderVolModelsBgms[sliderBgmModel.Index.Value].Select())
+                                Debug.LogError("選択する呼び出しの失敗");
                             break;
                         default:
                             Debug.LogWarning("例外ケース");
@@ -393,6 +464,7 @@ namespace Title.Presenter
             var tTResources = new TitleTemplateResourcesAccessory();
             var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
             var configMap = tTResources.GetSystemConfig(datas);
+            var configMapDefault = new Dictionary<EnumSystemConfig, int>(configMap);
 
             // BGMスライダー
             sliderBgmModel.EventState.ObserveEveryValueChanged(x => x.Value)
@@ -407,9 +479,11 @@ namespace Title.Presenter
                             // BGMスライダーボリュームの設定値を選択する
                             if (!sliderVolModelsBgms[sliderBgmModel.Index.Value].Select())
                                 Debug.LogError("選択する呼び出しの失敗");
-                            // T.B.D カーソル選択
-                            //if (!optionCursorView.PlaySelectAnimation(sliderBgmView.transform.position))
-                            //    Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            // カーソル選択
+                            if (!optionCursorView.PlaySelectAnimation(sliderBgmView.transform.position, (bgmView.transform as RectTransform).sizeDelta))
+                                Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            //if (!labelViews[0].SetFontStyleSelected())
+                            //    Debug.LogError("フォントスタイルを変更呼び出しの失敗");
                             break;
                         case EnumEventCommand.DeSelected:
                             // 処理無し
@@ -430,6 +504,8 @@ namespace Title.Presenter
                 {
                     if (!sliderBgmView.SetSliderValue(x))
                         Debug.LogError("スライダーの値セット呼び出しの失敗");
+                    if (!valueBgmView.SetLabelValue(x))
+                        Debug.LogError("ラベル値セット呼び出しの失敗");
                 });
             // BGMスライダーボリューム
             for (var i = 0; i < sliderVolModelsBgms.Length; i++)
@@ -451,6 +527,12 @@ namespace Title.Presenter
                                 configMap[EnumSystemConfig.BGMVolumeIndex] = tmpIdx;
                                 if (!TitleGameManager.Instance.AudioOwner.SetVolume(configMap))
                                     Debug.LogError("ボリュームセット処理呼び出しの失敗");
+                                if (!bgmView.PlayFadeAnimation(EnumOptionContentState.Selected))
+                                    Debug.LogError("フェードアニメーション呼び出しの失敗");
+                                //if (!labelViews[0].SetFontStyleSelected())
+                                //    Debug.LogError("フォントスタイルを変更呼び出しの失敗");
+                                if (!seView.PlayFadeAnimation(EnumOptionContentState.DeSelected))
+                                    Debug.LogError("フェードアニメーション呼び出しの失敗");
                                 break;
                             case EnumEventCommand.DeSelected:
                                 // 処理無し
@@ -480,9 +562,9 @@ namespace Title.Presenter
                             // SEスライダーボリュームの設定値を選択する
                             if (!sliderVolModelsSes[sliderSeModel.Index.Value].Select())
                                 Debug.LogError("選択する呼び出しの失敗");
-                            // T.B.D カーソル選択
-                            //if (!optionCursorView.PlaySelectAnimation(sliderSeView.transform.position))
-                            //    Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            // カーソル選択
+                            if (!optionCursorView.PlaySelectAnimation(sliderSeView.transform.position, (seView.transform as RectTransform).sizeDelta))
+                                Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
                             break;
                         case EnumEventCommand.DeSelected:
                             // 処理無し
@@ -503,6 +585,8 @@ namespace Title.Presenter
                 {
                     if (!sliderSeView.SetSliderValue(x))
                         Debug.LogError("スライダーの値セット呼び出しの失敗");
+                    if (!valueSeView.SetLabelValue(x))
+                        Debug.LogError("ラベル値セット呼び出しの失敗");
                 });
             // SEスライダーボリューム
             for (var i = 0; i < sliderVolModelsSes.Length; i++)
@@ -524,6 +608,15 @@ namespace Title.Presenter
                                 configMap[EnumSystemConfig.SEVolumeIndex] = tmpIdx;
                                 if (!TitleGameManager.Instance.AudioOwner.SetVolume(configMap))
                                     Debug.LogError("ボリュームセット処理呼び出しの失敗");
+                                if (!seView.PlayFadeAnimation(EnumOptionContentState.Selected))
+                                    Debug.LogError("フェードアニメーション呼び出しの失敗");
+                                if (!bgmView.PlayFadeAnimation(EnumOptionContentState.DeSelected))
+                                    Debug.LogError("フェードアニメーション呼び出しの失敗");
+                                //if (!labelViews[0].SetFontStyleDeSelected())
+                                //    Debug.LogError("フォントスタイルを変更呼び出しの失敗");
+                                if (!vibrationView.PlayFadeAnimation(EnumOptionContentState.DeSelected))
+                                    Debug.LogError("フェードアニメーション呼び出しの失敗");
+
                                 break;
                             case EnumEventCommand.DeSelected:
                                 // 処理無し
@@ -550,12 +643,20 @@ namespace Title.Presenter
                             // 処理無し
                             break;
                         case EnumEventCommand.Selected:
-                            // T.B.D バイブレーション機能ラジオボタンのON/OFFの設定値を選択する
-                            //if (!sliderVolModelsSes[sliderSeModel.Index.Value].Select())
-                            //    Debug.LogError("選択する呼び出しの失敗");
-                            // T.B.D カーソル選択
-                            //if (!optionCursorView.PlaySelectAnimation(radioVibrationView.transform.position))
-                            //    Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            // バイブレーション機能ラジオボタンのON/OFFの設定値を選択する
+                            if (((EnumVibrationEnableState)radioVibrationModel.VibrationState.Value).Equals(EnumVibrationEnableState.ON))
+                            {
+                                if (!onVibrationModel.Select())
+                                    Debug.LogError("選択する呼び出しの失敗");
+                            }
+                            else
+                            {
+                                if (!offVibrationModel.Select())
+                                    Debug.LogError("選択する呼び出しの失敗");
+                            }
+                            // カーソル選択
+                            if (!optionCursorView.PlaySelectAnimation(vibrationView.transform.position, (vibrationView.transform as RectTransform).sizeDelta))
+                                Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
                             break;
                         case EnumEventCommand.DeSelected:
                             // 処理無し
@@ -571,6 +672,14 @@ namespace Title.Presenter
                             break;
                     }
                 });
+            radioVibrationModel.VibrationState.ObserveEveryValueChanged(x => x.Value)
+                .Subscribe(x =>
+                {
+                    if (!onVibrationView.PlayFadeAnimation(((EnumVibrationEnableState)x).Equals(EnumVibrationEnableState.ON) ? EnumOptionContentState.Selected : EnumOptionContentState.DeSelected))
+                        Debug.LogError("選択する呼び出しの失敗");
+                    if (!offVibrationView.PlayFadeAnimation(((EnumVibrationEnableState)x).Equals(EnumVibrationEnableState.ON) ? EnumOptionContentState.DeSelected : EnumOptionContentState.Selected))
+                        Debug.LogError("選択する呼び出しの失敗");
+                });
             // バイブレーション機能ラジオボタンのON
             onVibrationModel.EventState.ObserveEveryValueChanged(x => x.Value)
                 .Subscribe(x =>
@@ -583,9 +692,16 @@ namespace Title.Presenter
                         case EnumEventCommand.Selected:
                             // 選択SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
+                            if (configMap[EnumSystemConfig.VibrationEnableIndex] != (int)EnumVibrationEnableState.ON)
+                                if (!TitleGameManager.Instance.InputSystemsOwner.PlayVibration())
+                                    Debug.LogError("振動の再生処理呼び出しの失敗");
                             configMap[EnumSystemConfig.VibrationEnableIndex] = (int)EnumVibrationEnableState.ON;
-                            if (!TitleGameManager.Instance.InputSystemsOwner.PlayVibration())
-                                Debug.LogError("振動の再生処理呼び出しの失敗");
+                            if (!radioVibrationModel.SetVibrationState(configMap[EnumSystemConfig.VibrationEnableIndex]))
+                                Debug.LogError("振動状態セット呼び出しの失敗");
+                            if (!vibrationView.PlayFadeAnimation(EnumOptionContentState.Selected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
+                            if (!seView.PlayFadeAnimation(EnumOptionContentState.DeSelected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
                             break;
                         case EnumEventCommand.DeSelected:
                             // 処理無し
@@ -614,6 +730,12 @@ namespace Title.Presenter
                             // 選択SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
                             configMap[EnumSystemConfig.VibrationEnableIndex] = (int)EnumVibrationEnableState.OFF;
+                            if (!radioVibrationModel.SetVibrationState(configMap[EnumSystemConfig.VibrationEnableIndex]))
+                                Debug.LogError("振動状態セット呼び出しの失敗");
+                            if (!vibrationView.PlayFadeAnimation(EnumOptionContentState.Selected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
+                            if (!seView.PlayFadeAnimation(EnumOptionContentState.DeSelected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
                             break;
                         case EnumEventCommand.DeSelected:
                             // 処理無し
@@ -629,6 +751,7 @@ namespace Title.Presenter
                             break;
                     }
                 });
+            var isLockResetSaveData = false;
             // セーブデータ消去ボタン
             resetSaveDataModel.EventState.ObserveEveryValueChanged(x => x.Value)
                 .Subscribe(x =>
@@ -641,28 +764,48 @@ namespace Title.Presenter
                         case EnumEventCommand.Selected:
                             // 選択SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
-                            // T.B.D カーソル選択
-                            //if (!optionCursorView.PlaySelectAnimation(resetSaveDataView.transform.position))
-                            //    Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            // カーソル選択
+                            if (!optionCursorView.PlaySelectAnimation(resetSaveDataModel.transform.position, (resetSaveDataModel.transform as RectTransform).sizeDelta))
+                                Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            if (!resetSaveDataView.PlayFadeAnimation(EnumOptionContentState.Selected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
+                            if (!vibrationView.PlayFadeAnimation(EnumOptionContentState.DeSelected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
                             break;
                         case EnumEventCommand.DeSelected:
-                            // 処理無し
+                            // 非選択状態の時は透明にする
+                            if (!resetSaveDataView.PlayFadeAnimation(EnumOptionContentState.DeSelected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
                             break;
                         case EnumEventCommand.Canceled:
                             // 処理無し
                             break;
                         case EnumEventCommand.Submited:
-                            // 決定SEを再生
-                            TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
-                            // T.B.D カーソル選択
-                            //if (!optionSmallCursorView.SetSelect(resetSaveDataConfirmYesView.transform.position))
-                            //    Debug.LogError("カーソル選択位置変更処理呼び出しの失敗");
+                            if (!isLockResetSaveData)
+                            {
+                                isLockResetSaveData = true;
+                                // 決定SEを再生
+                                TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
+                                if (!TitleGameManager.Instance.SceneOwner.DestroyMainSceneStagesState())
+                                    Debug.LogError("ステージクリア済みデータ削除呼び出しの失敗");
+                                // メッセージ表示アニメーション
+                                Observable.FromCoroutine<bool>(observer => resetSaveDataMessageView.PlayBoundAnimation(observer))
+                                    .Subscribe(_ =>
+                                    {
+                                        isLockResetSaveData = false;
+                                        // Submitedが再び呼ばれない対策でデフォルトイベントの疑似呼び出し
+                                        if (!resetSaveDataModel.SetEventState(EnumEventCommand.Default))
+                                            Debug.LogError("イベント状態変更呼び出しの失敗");
+                                    })
+                                    .AddTo(gameObject);
+                            }
                             break;
                         default:
                             Debug.LogWarning("例外ケース");
                             break;
                     }
                 });
+            var isLockResetConfig = false;
             // オプション設定リセットのボタン
             resetConfigModel.EventState.ObserveEveryValueChanged(x => x.Value)
                 .Subscribe(x =>
@@ -675,12 +818,133 @@ namespace Title.Presenter
                         case EnumEventCommand.Selected:
                             // 選択SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
-                            // T.B.D カーソル選択
-                            //if (!optionCursorView.PlaySelectAnimation(resetConfigView.transform.position))
-                            //    Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            // カーソル選択
+                            if (!optionCursorView.PlaySelectAnimation(resetConfigModel.transform.position, (resetConfigModel.transform as RectTransform).sizeDelta))
+                                Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            if (!resetConfigView.PlayFadeAnimation(EnumOptionContentState.Selected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
                             break;
                         case EnumEventCommand.DeSelected:
+                            // 非選択状態の時は透明にする
+                            if (!resetConfigView.PlayFadeAnimation(EnumOptionContentState.DeSelected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
+                            break;
+                        case EnumEventCommand.Canceled:
                             // 処理無し
+                            break;
+                        case EnumEventCommand.Submited:
+                            if (!isLockResetConfig)
+                            {
+                                isLockResetConfig = true;
+                                // 決定SEを再生
+                                TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
+                                // オプション初期化
+                                if (!TitleGameManager.Instance.AudioOwner.DestroySystemConfig())
+                                    Debug.LogError("システム設定データの削除呼び出しの失敗");
+                                if (!TitleGameManager.Instance.AudioOwner.ReLoadAudios())
+                                    Debug.LogError("オーディオ情報リロード呼び出しの失敗");
+                                // モデルへの反映
+                                datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
+                                configMap = tTResources.GetSystemConfig(datas);
+                                configMapDefault = new Dictionary<EnumSystemConfig, int>(configMap);
+                                if (!sliderBgmModel.SetIndex(configMap[EnumSystemConfig.BGMVolumeIndex]))
+                                    Debug.LogError("インデックス番号をセット処理呼び出しの失敗");
+                                if (!sliderSeModel.SetIndex(configMap[EnumSystemConfig.SEVolumeIndex]))
+                                    Debug.LogError("インデックス番号をセット処理呼び出しの失敗");
+                                if (!radioVibrationModel.SetVibrationState(configMap[EnumSystemConfig.VibrationEnableIndex]))
+                                    Debug.LogError("振動状態セット呼び出しの失敗");
+                                // メッセージ表示アニメーション
+                                Observable.FromCoroutine<bool>(observer => resetConfigMessageView.PlayBoundAnimation(observer))
+                                    .Subscribe(_ =>
+                                    {
+                                        isLockResetConfig = false;
+                                        // Submitedが再び呼ばれない対策でデフォルトイベントの疑似呼び出し
+                                        if (!resetConfigModel.SetEventState(EnumEventCommand.Default))
+                                            Debug.LogError("イベント状態変更呼び出しの失敗");
+                                    })
+                                    .AddTo(gameObject);
+                            }
+                            break;
+                        default:
+                            Debug.LogWarning("例外ケース");
+                            break;
+                    }
+                });
+            var isLockAllLevelReleased = false;
+            // 全ステージ解放
+            allLevelReleasedModel.EventState.ObserveEveryValueChanged(x => x.Value)
+                .Subscribe(x =>
+                {
+                    switch ((EnumEventCommand)x)
+                    {
+                        case EnumEventCommand.Default:
+                            // 処理無し
+                            break;
+                        case EnumEventCommand.Selected:
+                            // 選択SEを再生
+                            TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
+                            // カーソル選択
+                            if (!optionCursorView.PlaySelectAnimation(allLevelReleasedModel.transform.position, (allLevelReleasedModel.transform as RectTransform).sizeDelta))
+                                Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            if (!allLevelReleasedView.PlayFadeAnimation(EnumOptionContentState.Selected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
+                            break;
+                        case EnumEventCommand.DeSelected:
+                            // 非選択状態の時は透明にする
+                            if (!allLevelReleasedView.PlayFadeAnimation(EnumOptionContentState.DeSelected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
+                            break;
+                        case EnumEventCommand.Canceled:
+                            // 処理無し
+                            break;
+                        case EnumEventCommand.Submited:
+                            if (!isLockAllLevelReleased)
+                            {
+                                isLockAllLevelReleased = true;
+                                // 決定SEを再生
+                                TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
+                                // 全ステージ解放
+                                if (!TitleGameManager.Instance.SceneOwner.AllReleasedMainSceneStagesState())
+                                    Debug.LogError("ステージクリア済みデータ削除呼び出しの失敗");
+                                // メッセージ表示アニメーション
+                                Observable.FromCoroutine<bool>(observer => allLevelReleasedMessageView.PlayBoundAnimation(observer))
+                                    .Subscribe(_ =>
+                                    {
+                                        isLockAllLevelReleased = false;
+                                        // Submitedが再び呼ばれない対策でデフォルトイベントの疑似呼び出し
+                                        if (!allLevelReleasedModel.SetEventState(EnumEventCommand.Default))
+                                            Debug.LogError("イベント状態変更呼び出しの失敗");
+                                    })
+                                    .AddTo(gameObject);
+                            }
+                            break;
+                        default:
+                            Debug.LogWarning("例外ケース");
+                            break;
+                    }
+                });
+            // 決定ボタン
+            fixModel.EventState.ObserveEveryValueChanged(x => x.Value)
+                .Subscribe(x =>
+                {
+                    switch ((EnumEventCommand)x)
+                    {
+                        case EnumEventCommand.Default:
+                            // 処理無し
+                            break;
+                        case EnumEventCommand.Selected:
+                            // 選択SEを再生
+                            TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
+                            // カーソル選択
+                            if (!optionCursorView.PlaySelectAnimation(fixModel.transform.position, (fixModel.transform as RectTransform).sizeDelta))
+                                Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            if (!fixView.PlayFadeAnimation(EnumOptionContentState.Selected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
+                            break;
+                        case EnumEventCommand.DeSelected:
+                            // 非選択状態の時は透明にする
+                            if (!fixView.PlayFadeAnimation(EnumOptionContentState.DeSelected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
                             break;
                         case EnumEventCommand.Canceled:
                             // 処理無し
@@ -688,9 +952,19 @@ namespace Title.Presenter
                         case EnumEventCommand.Submited:
                             // 決定SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
-                            // T.B.D カーソル選択
-                            //if (!optionSmallCursorView.SetSelect(resetConfigConfirmYesView.transform.position))
-                            //    Debug.LogError("カーソル選択位置変更処理呼び出しの失敗");
+                            // 現在の設定を保存
+                            configMapDefault = new Dictionary<EnumSystemConfig, int>(configMap);
+                            if (!tTResources.SaveDatasCSVOfSystemConfig(ConstResorcesNames.SYSTEM_CONFIG, configMap))
+                                Debug.LogError("システムオプション設定をCSVデータへ保存呼び出しの失敗");
+                            // オプション設定を閉じる
+                            option.SetActive(false);
+                            // ゲーム開始／オプション／ゲーム終了ボタンを表示
+                            gameStartOrExit.SetActive(true);
+                            // カーソルアイコンを表示
+                            if (!cursorIcon.activeSelf)
+                                cursorIcon.SetActive(true);
+                            if (!cursorIconView.SetSelect(gameStartLogoView.transform.position))
+                                Debug.LogError("カーソル選択位置変更処理呼び出しの失敗");
                             break;
                         default:
                             Debug.LogWarning("例外ケース");
@@ -709,12 +983,16 @@ namespace Title.Presenter
                         case EnumEventCommand.Selected:
                             // 選択SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
-                            // T.B.D カーソル選択
-                            //if (!optionCursorView.PlaySelectAnimation(backView.transform.position))
-                            //    Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            // カーソル選択
+                            if (!optionCursorView.PlaySelectAnimation(backModel.transform.position, (backModel.transform as RectTransform).sizeDelta))
+                                Debug.LogError("カーソル選択アニメーション呼び出しの失敗");
+                            if (!backView.PlayFadeAnimation(EnumOptionContentState.Selected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
                             break;
                         case EnumEventCommand.DeSelected:
-                            // 処理無し
+                            // 非選択状態の時は透明にする
+                            if (!backView.PlayFadeAnimation(EnumOptionContentState.DeSelected))
+                                Debug.LogError("フェードアニメーション呼び出しの失敗");
                             break;
                         case EnumEventCommand.Canceled:
                             // 処理無し
@@ -722,8 +1000,20 @@ namespace Title.Presenter
                         case EnumEventCommand.Submited:
                             // キャンセルSEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_cancel);
-                            // T.B.D オプション設定を閉じる
-                            bgmView.transform.parent.gameObject.SetActive(false);
+                            // ファイル読み込み時の状態へ戻す
+                            configMap = configMapDefault;
+                            // 最後の設定を再読み込み
+                            if (!TitleGameManager.Instance.AudioOwner.ReLoadAudios())
+                                Debug.LogError("オーディオ情報リロード呼び出しの失敗");
+                            // オプション設定を閉じる
+                            option.SetActive(false);
+                            // ゲーム開始／オプション／ゲーム終了ボタンを表示
+                            gameStartOrExit.SetActive(true);
+                            // カーソルアイコンを表示
+                            if (!cursorIcon.activeSelf)
+                                cursorIcon.SetActive(true);
+                            if (!cursorIconView.SetSelect(gameStartLogoView.transform.position))
+                                Debug.LogError("カーソル選択位置変更処理呼び出しの失敗");
                             break;
                         default:
                             Debug.LogWarning("例外ケース");

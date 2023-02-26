@@ -18,7 +18,7 @@ namespace Main.Common
 
         public void OnStart()
         {
-            new MainTemplateResourcesAccessory().Initialize();
+            new MainTemplateResourcesAccessory();
         }
 
         /// <summary>
@@ -30,7 +30,6 @@ namespace Main.Common
             try
             {
                 var tMResources = new MainTemplateResourcesAccessory();
-                tMResources.Initialize();
                 var datas = tMResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
                 if (datas == null)
                     throw new System.Exception("リソース読み込みの失敗");
@@ -53,7 +52,6 @@ namespace Main.Common
             try
             {
                 var tMResources = new MainTemplateResourcesAccessory();
-                tMResources.Initialize();
                 var datas = tMResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
                 if (datas == null)
                     throw new System.Exception("リソース読み込みの失敗");

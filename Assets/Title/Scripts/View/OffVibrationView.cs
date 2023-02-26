@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using Title.Common;
+using Title.Template;
 
 namespace Title.View
 {
@@ -24,16 +25,25 @@ namespace Title.View
             image = GetComponent<Image>();
         }
 
+        private void OnEnable()
+        {
+            var tTResources = new TitleTemplateResourcesAccessory();
+            var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
+            var configMap = tTResources.GetSystemConfig(datas);
+            var color = new Color(image.color.r, image.color.g, image.color.b, configMap[EnumSystemConfig.VibrationEnableIndex] == (int)EnumVibrationEnableState.OFF ? 1f : 0f);
+            image.color = color;
+        }
+
         /// <summary>
         /// フェードのDOTweenアニメーション再生
         /// </summary>
         /// <param name="state">ステータス</param>
         /// <returns>成功／失敗</returns>
-        public bool PlayFadeAnimation(EnumFadeState state)
+        public bool PlayFadeAnimation(EnumOptionContentState state)
         {
             try
             {
-                image.DOFade(endValue: state.Equals(EnumFadeState.Open) ? 0f : 1f, duration)
+                image.DOFade(endValue: state.Equals(EnumOptionContentState.Selected) ? 1f : 0f, duration)
                     .SetUpdate(true);
 
                 return true;

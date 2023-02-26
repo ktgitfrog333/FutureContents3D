@@ -17,7 +17,7 @@ namespace Select.Test
 
         private void Start()
         {
-            new SelectTemplateResourcesAccessory().Initialize();
+            new SelectTemplateResourcesAccessory();
         }
 
         public void OnClicked()
@@ -51,7 +51,7 @@ namespace Select.Test
             //var configMap = new Dictionary<EnumSystemConfig, int>();
             var idx = 0;
             configMap[EnumSystemCommonCash.SceneId] = inputConfigDatas[idx++];
-            if (!tSResources.SaveDatasCSVOfSystemConfig(ConstResorcesNames.SYSTEM_COMMON_CASH, configMap))
+            if (!tSResources.SaveDatasCSVOfSystemCommonCash(ConstResorcesNames.SYSTEM_COMMON_CASH, configMap))
                 Debug.LogError("CSV保存呼び出しの失敗");
         }
     }

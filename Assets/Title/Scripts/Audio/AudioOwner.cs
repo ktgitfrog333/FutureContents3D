@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Title.Common;
+using Title.Template;
 
 namespace Title.Audio
 {
@@ -67,6 +68,29 @@ namespace Title.Audio
         public bool SaveAudios(Dictionary<EnumSystemConfig, int> configMap)
         {
             return audioMixer.SaveAudios(configMap);
+        }
+
+        /// <summary>
+        /// システム設定データの削除
+        /// </summary>
+        /// <returns>成功／失敗</returns>
+        public bool DestroySystemConfig()
+        {
+            try
+            {
+                var tTResources = new TitleTemplateResourcesAccessory();
+                var datas = tTResources.LoadResourcesCSV(ConstResorcesNames.SYSTEM_CONFIG);
+                var configMap = tTResources.GetSystemConfig(datas);
+                if (!tTResources.SaveDatasCSVOfSystemConfig(ConstResorcesNames.SYSTEM_CONFIG, configMap))
+                    Debug.LogError("CSV保存呼び出しの失敗");
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return false;
+            }
         }
     }
 

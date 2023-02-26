@@ -21,6 +21,26 @@ namespace Title.Model
         private EventTrigger _eventTrigger;
 
         /// <summary>
+        /// 選択する
+        /// </summary>
+        /// <returns>成功／失敗</returns>
+        public bool Select()
+        {
+            try
+            {
+                _eventSystem.SetSelectedGameObject(gameObject);
+                _eventState.Value = (int)EnumEventCommand.Selected;
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// ボタンのステータスを変更
         /// </summary>
         /// <param name="enabled">有効／無効</param>
@@ -53,28 +73,6 @@ namespace Title.Model
                 if (_eventTrigger == null)
                     _eventTrigger = GetComponent<EventTrigger>();
                 _eventTrigger.enabled = enabled;
-
-                return true;
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError(e);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 自動選択する
-        /// </summary>
-        /// <returns>成功／失敗</returns>
-        public bool ManualSelect()
-        {
-            try
-            {
-                if (_eventSystem == null)
-                    _eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
-                _eventSystem.SetSelectedGameObject(gameObject);
-                _eventState.Value = (int)EnumEventCommand.Selected;
 
                 return true;
             }

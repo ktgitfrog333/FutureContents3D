@@ -188,18 +188,28 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  vibrationView: {fileID: 0}
   radioVibrationModel: {fileID: 0}
+  onVibrationView: {fileID: 0}
   onVibrationModel: {fileID: 0}
+  offVibrationView: {fileID: 0}
   offVibrationModel: {fileID: 0}
+  resetSaveDataView: {fileID: 0}
   resetSaveDataModel: {fileID: 0}
+  resetConfigView: {fileID: 0}
   resetConfigModel: {fileID: 0}
+  allLevelReleasedView: {fileID: 0}
   allLevelReleasedModel: {fileID: 0}
+  fixView: {fileID: 0}
   fixModel: {fileID: 0}
+  backView: {fileID: 0}
   backModel: {fileID: 0}
   resetSaveDataMessageView: {fileID: 0}
   resetConfigMessageView: {fileID: 0}
   allLevelReleasedMessageView: {fileID: 0}
   optionCursorView: {fileID: 0}
+  labelViews:
+  - {fileID: 0}
 --- !u!1 &1163071978
 GameObject:
   m_ObjectHideFlags: 0

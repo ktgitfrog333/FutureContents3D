@@ -8,14 +8,16 @@ namespace Select.Template
 {
     /// <summary>
     /// リソースアクセスのテンプレート
-    /// タイトル用
+    /// セレクト用
     /// </summary>
     public class SelectTemplateResourcesAccessory
     {
         /// <summary>
-        /// 初期処理
+        /// リソースアクセスのテンプレート
+        /// セレクト用
+        /// コンストラクタ
         /// </summary>
-        public void Initialize()
+        public SelectTemplateResourcesAccessory()
         {
             new SelectResourcesAccessory().Initialize();
         }
@@ -41,7 +43,7 @@ namespace Select.Template
         }
 
         /// <summary>
-        /// システムオプション設定をオブジェクトへ一時セット
+        /// システム設定キャッシュをオブジェクトへ一時セット
         /// </summary>
         /// <param name="datas">二次元配列の文字列データ</param>
         /// <returns>格納オブジェクト</returns>
@@ -61,14 +63,14 @@ namespace Select.Template
         }
 
         /// <summary>
-        /// システムオプション設定をCSVデータへ保存
+        /// システム設定キャッシュをCSVデータへ保存
         /// </summary>
         /// <param name="resourcesLoadName">リソースCSVファイル名</param>
         /// <param name="configMap">格納オブジェクト</param>
         /// <returns>成功／失敗</returns>
-        public bool SaveDatasCSVOfSystemConfig(string resourcesLoadName, Dictionary<EnumSystemCommonCash, int> configMap)
+        public bool SaveDatasCSVOfSystemCommonCash(string resourcesLoadName, Dictionary<EnumSystemCommonCash, int> configMap)
         {
-            return new SelectResourcesAccessory().SaveDatasCSVOfSystemConfig(resourcesLoadName, configMap);
+            return new SelectResourcesAccessory().SaveDatasCSVOfSystemCommonCash(resourcesLoadName, configMap);
         }
     }
 }

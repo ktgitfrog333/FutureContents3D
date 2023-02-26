@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Title.Common;
 
 namespace Title.Model
 {
@@ -52,6 +53,26 @@ namespace Title.Model
                 if (_eventTrigger == null)
                     _eventTrigger = GetComponent<EventTrigger>();
                 _eventTrigger.enabled = enabled;
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// イベント状態をセット
+        /// </summary>
+        /// <param name="state">入力イベント</param>
+        /// <returns>成功／失敗</returns>
+        public bool SetEventState(EnumEventCommand state)
+        {
+            try
+            {
+                _eventState.Value = (int)state;
 
                 return true;
             }

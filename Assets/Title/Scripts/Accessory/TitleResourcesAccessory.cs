@@ -24,6 +24,11 @@ namespace Title.Accessory
             {
                 Directory.CreateDirectory(GetHomePath());
             }
+            // システム設定キャッシュが存在しない場合は作成
+            if (!File.Exists($"{GetHomePath()}{ConstResorcesNames.SYSTEM_COMMON_CASH}.csv"))
+            {
+                using (File.Create($"{GetHomePath()}{ConstResorcesNames.SYSTEM_COMMON_CASH}.csv")) { }
+            }
             // システム設定ファイルが存在しない場合は作成
             if (!File.Exists($"{GetHomePath()}{ConstResorcesNames.SYSTEM_CONFIG}.csv"))
             {
@@ -131,6 +136,35 @@ namespace Title.Accessory
         }
 
         /// <summary>
+        /// システム設定キャッシュをオブジェクトへ一時セット
+        /// </summary>
+        /// <param name="datas">二次元配列の文字列データ</param>
+        /// <returns>格納オブジェクト</returns>
+        public Dictionary<EnumSystemCommonCash, int> GetSystemCommonCash(List<string[]> datas)
+        {
+            try
+            {
+                var configMap = new Dictionary<EnumSystemCommonCash, int>();
+                // 一行目はカラム名なのでスキップ
+                for (var i = 1; i < datas.Count; i++)
+                {
+                    var child = datas[i];
+                    for (var j = 0; j < child.Length; j++)
+                    {
+                        configMap[(EnumSystemCommonCash)j] = int.Parse(child[j]);
+                    }
+                }
+
+                return configMap;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return null;
+            }
+        }
+
+        /// <summary>
         /// システムオプション設定をオブジェクトへ一時セット
         /// </summary>
         /// <param name="datas">二次元配列の文字列データ</param>
@@ -193,6 +227,38 @@ namespace Title.Accessory
             {
                 Debug.LogError(e);
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// システム設定キャッシュをCSVデータへ保存
+        /// </summary>
+        /// <param name="resourcesLoadName">リソースCSVファイル名</param>
+        /// <param name="configMap">格納オブジェクト</param>
+        /// <returns>成功／失敗</returns>
+        public bool SaveDatasCSVOfSystemCommonCash(string resourcesLoadName, Dictionary<EnumSystemCommonCash, int> configMap)
+        {
+            try
+            {
+                var path = GetHomePath();
+                // 一度ファイル内のデータを削除
+                using (var fileStream = new FileStream($"{path}{resourcesLoadName}.csv", FileMode.Open))
+                {
+                    fileStream.SetLength(0);
+                }
+                // 設定内容を保存
+                using (var sw = new StreamWriter($"{path}{resourcesLoadName}.csv", true, Encoding.GetEncoding("UTF-8")))
+                {
+                    sw.WriteLine(string.Join(",", GetKeysRecord(configMap)));
+                    sw.WriteLine(string.Join(",", GetValuesRecord(configMap)));
+                }
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+                return false;
             }
         }
 
@@ -304,6 +370,25 @@ namespace Title.Accessory
         /// <param name="configMap">格納オブジェクト</param>
         /// <returns>一行分のレコード</returns>
         private string[] GetValuesRecord(Dictionary<EnumMainSceneStagesState, int> configMap)
+        {
+            return configMap.Select(q => q.Value + "").ToArray();
+        }
+        /// <summary>
+        /// キーのレコードを取得
+        /// </summary>
+        /// <param name="configMap">格納オブジェクト</param>
+        /// <returns>CSVのタイトル箇所</returns>
+        private string[] GetKeysRecord(Dictionary<EnumSystemCommonCash, int> configMap)
+        {
+            return configMap.Select(q => q.Key + "").ToArray();
+        }
+
+        /// <summary>
+        /// Valueのレコードを取得
+        /// </summary>
+        /// <param name="configMap">格納オブジェクト</param>
+        /// <returns>一行分のレコード</returns>
+        private string[] GetValuesRecord(Dictionary<EnumSystemCommonCash, int> configMap)
         {
             return configMap.Select(q => q.Value + "").ToArray();
         }

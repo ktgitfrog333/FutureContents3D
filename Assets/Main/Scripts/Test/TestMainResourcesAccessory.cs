@@ -17,7 +17,7 @@ namespace Main.Test
 
         private void Start()
         {
-            new MainTemplateResourcesAccessory().Initialize();
+            new MainTemplateResourcesAccessory();
         }
 
         public void OnClicked()

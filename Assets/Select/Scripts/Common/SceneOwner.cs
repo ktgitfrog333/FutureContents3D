@@ -18,7 +18,7 @@ namespace Select.Common
 
         public void OnStart()
         {
-            new SelectTemplateResourcesAccessory().Initialize();
+            new SelectTemplateResourcesAccessory();
         }
 
         /// <summary>
@@ -30,7 +30,6 @@ namespace Select.Common
             try
             {
                 var tSResources = new SelectTemplateResourcesAccessory();
-                tSResources.Initialize();
                 var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
                 if (datas == null)
                     throw new System.Exception("リソース読み込みの失敗");
@@ -53,7 +52,6 @@ namespace Select.Common
             try
             {
                 var tSResources = new SelectTemplateResourcesAccessory();
-                tSResources.Initialize();
                 var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
                 if (datas == null)
                     throw new System.Exception("リソース読み込みの失敗");
@@ -77,7 +75,7 @@ namespace Select.Common
             try
             {
                 var tSResources = new SelectTemplateResourcesAccessory();
-                if (!tSResources.SaveDatasCSVOfSystemConfig(ConstResorcesNames.SYSTEM_COMMON_CASH, configMap))
+                if (!tSResources.SaveDatasCSVOfSystemCommonCash(ConstResorcesNames.SYSTEM_COMMON_CASH, configMap))
                     Debug.LogError("CSV保存呼び出しの失敗");
 
                 return true;

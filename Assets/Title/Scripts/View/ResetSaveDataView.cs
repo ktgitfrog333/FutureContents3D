@@ -8,9 +8,9 @@ namespace Title.View
 {
     /// <summary>
     /// ビュー
-    /// BGMタイトル、スライダー、設定値の表示用パネル
+    /// セーブデータ消去
     /// </summary>
-    public class BGMView : CanvasFadeController
+    public class ResetSaveDataView : CanvasFadeController
     {
         /// <summary>終了時間</summary>
         [SerializeField] private float duration = .1f;

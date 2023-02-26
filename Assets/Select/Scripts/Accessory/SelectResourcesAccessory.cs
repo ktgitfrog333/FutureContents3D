@@ -155,7 +155,7 @@ namespace Select.Accessory
         }
 
         /// <summary>
-        /// システムオプション設定をオブジェクトへ一時セット
+        /// システム設定キャッシュをオブジェクトへ一時セット
         /// </summary>
         /// <param name="datas">二次元配列の文字列データ</param>
         /// <returns>格納オブジェクト</returns>
@@ -221,12 +221,12 @@ namespace Select.Accessory
         }
 
         /// <summary>
-        /// システムオプション設定をCSVデータへ保存
+        /// システム設定キャッシュをCSVデータへ保存
         /// </summary>
         /// <param name="resourcesLoadName">リソースCSVファイル名</param>
         /// <param name="configMap">格納オブジェクト</param>
         /// <returns>成功／失敗</returns>
-        public bool SaveDatasCSVOfSystemConfig(string resourcesLoadName, Dictionary<EnumSystemCommonCash, int> configMap)
+        public bool SaveDatasCSVOfSystemCommonCash(string resourcesLoadName, Dictionary<EnumSystemCommonCash, int> configMap)
         {
             try
             {

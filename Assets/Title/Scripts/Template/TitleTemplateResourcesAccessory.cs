@@ -13,9 +13,11 @@ namespace Title.Template
     public class TitleTemplateResourcesAccessory
     {
         /// <summary>
-        /// 初期処理
+        /// リソースアクセスのテンプレート
+        /// タイトル用
+        /// コンストラクタ
         /// </summary>
-        public void Initialize()
+        public TitleTemplateResourcesAccessory()
         {
             new TitleResourcesAccessory().Initialize();
         }
@@ -45,6 +47,16 @@ namespace Title.Template
         /// </summary>
         /// <param name="datas">二次元配列の文字列データ</param>
         /// <returns>格納オブジェクト</returns>
+        public Dictionary<EnumSystemCommonCash, int> GetSystemCommonCash(List<string[]> datas)
+        {
+            return new TitleResourcesAccessory().GetSystemCommonCash(datas);
+        }
+
+        /// <summary>
+        /// システムオプション設定をオブジェクトへ一時セット
+        /// </summary>
+        /// <param name="datas">二次元配列の文字列データ</param>
+        /// <returns>格納オブジェクト</returns>
         public Dictionary<EnumSystemConfig, int> GetSystemConfig(List<string[]> datas)
         {
             return new TitleResourcesAccessory().GetSystemConfig(datas);
@@ -58,6 +70,17 @@ namespace Title.Template
         public Dictionary<EnumMainSceneStagesState, int>[] GetMainSceneStagesState(List<string[]> datas)
         {
             return new TitleResourcesAccessory().GetMainSceneStagesState(datas);
+        }
+
+        /// <summary>
+        /// システム設定キャッシュをCSVデータへ保存
+        /// </summary>
+        /// <param name="resourcesLoadName">リソースCSVファイル名</param>
+        /// <param name="configMap">格納オブジェクト</param>
+        /// <returns>成功／失敗</returns>
+        public bool SaveDatasCSVOfSystemCommonCash(string resourcesLoadName, Dictionary<EnumSystemCommonCash, int> configMap)
+        {
+            return new TitleResourcesAccessory().SaveDatasCSVOfSystemCommonCash(resourcesLoadName, configMap);
         }
 
         /// <summary>

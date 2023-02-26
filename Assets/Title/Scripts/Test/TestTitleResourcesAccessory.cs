@@ -14,11 +14,12 @@ namespace Title.Test
     {
         [SerializeField] private int[] inputSystemConfig;
         [SerializeField] private int[] inputMainSceneStagesCleared;
+        [SerializeField] private int[] inputSystemCommonCash;
         [SerializeField] private int testMode;
 
         private void Start()
         {
-            new TitleTemplateResourcesAccessory().Initialize();
+            new TitleTemplateResourcesAccessory();
         }
 
         public void OnClicked()
@@ -33,6 +34,9 @@ namespace Title.Test
                     break;
                 case 2:
                     TestCase_2();
+                    break;
+                case 3:
+                    TestCase_3();
                     break;
                 default:
                     Debug.LogError("例外ケース");
@@ -129,6 +133,35 @@ namespace Title.Test
             //}
             Debug.Log("---SaveDatasCSVOfMainSceneStagesCleared---");
             if (!tTResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, configMaps))
+                Debug.LogError("CSV保存呼び出しの失敗");
+        }
+
+        public void TestCase_3()
+        {
+            Debug.Log("---OnClicked---");
+            var tSResources = new TitleTemplateResourcesAccessory();
+            Debug.Log("---LoadResourcesCSV---");
+            var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
+            if (datas == null)
+                throw new System.Exception("リソース読み込みの失敗");
+            for (var i = 0; i < datas.Count; i++)
+            {
+                for (var j = 0; j < datas[i].Length; j++)
+                {
+                    Debug.Log(datas[i][j]);
+                }
+            }
+            Debug.Log("---GetSystemCommonCash---");
+            var configMap = tSResources.GetSystemCommonCash(datas);
+            foreach (var map in configMap)
+            {
+                Debug.Log($"Key:{map.Key}_Val:{map.Value}");
+            }
+            Debug.Log("---SaveResourcesCSVOfSystemCommonCash---");
+            //var configMap = new Dictionary<EnumSystemConfig, int>();
+            var idx = 0;
+            configMap[EnumSystemCommonCash.SceneId] = inputSystemCommonCash[idx++];
+            if (!tSResources.SaveDatasCSVOfSystemCommonCash(ConstResorcesNames.SYSTEM_COMMON_CASH, configMap))
                 Debug.LogError("CSV保存呼び出しの失敗");
         }
     }
