@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Main.Template;
+using Universal.Template;
+using Universal.Common;
 using Main.Common;
 
 namespace Main.Audio
@@ -23,11 +24,28 @@ namespace Main.Audio
             audioSource.loop = true;
         }
 
-        /// <summary>
+        public void PlayBGM(ClipToPlayBGM clipToPlay)
+        {
+            PlayAudioSource(clipToPlay);
+        }
+
+        public void OnStartAndPlayBGM()
+        {
+            var temp = new TemplateResourcesAccessory();
+            // ステージIDの取得
+            var userDatas = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
+            // ステージ共通設定の取得
+            var adminDatas = temp.LoadSaveDatasJsonOfAdminBean(ConstResorcesNames.ADMIN_DATA);
+            var clipToPlay = adminDatas.playBgmNames[userDatas.sceneId - 1] - 1;
+
+            PlayAudioSource((ClipToPlayBGM)clipToPlay);
+        }
+
+                /// <summary>
         /// 指定されたBGMを再生する
         /// </summary>
         /// <param name="clipToPlay">BGM</param>
-        public void PlayBGM(ClipToPlayBGM clipToPlay)
+        private void PlayAudioSource(ClipToPlayBGM clipToPlay)
         {
             try
             {
@@ -44,30 +62,6 @@ namespace Main.Audio
             catch (System.Exception e)
             {
                 Debug.LogWarning(e);
-            }
-        }
-
-        /// <summary>
-        /// BGMを再生
-        /// ※ステージ開始時に呼ばれる
-        /// </summary>
-        public void OnStartAndPlayBGM()
-        {
-            var tResourcesAccessory = new MainTemplateResourcesAccessory();
-            // ステージIDの取得
-            var sysComCashResources = tResourcesAccessory.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
-            var sysComCash = tResourcesAccessory.GetSystemCommonCash(sysComCashResources);
-            // ステージ共通設定の取得
-            var mainSceneStagesConfResources = tResourcesAccessory.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CONFIG);
-            var mainSceneStagesConfs = tResourcesAccessory.GetMainSceneStagesConfig(mainSceneStagesConfResources);
-            var clipToPlay = mainSceneStagesConfs[sysComCash[EnumSystemCommonCash.SceneId]][EnumMainSceneStagesConfig.PlayBgmNames];
-
-            if (clipToPlay <= (clip.Length - 1))
-            {
-                audioSource.clip = clip[clipToPlay];
-
-                // BGMを再生
-                audioSource.Play();
             }
         }
     }

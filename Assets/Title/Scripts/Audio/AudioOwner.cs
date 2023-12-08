@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Title.Common;
-using Title.Template;
+using Universal.Template;
+using Universal.Bean;
+using Universal.Common;
 
 namespace Title.Audio
 {
@@ -44,11 +46,11 @@ namespace Title.Audio
         /// <summary>
         /// ボリュームをセット
         /// </summary>
-        /// <param name="configMap">システム設定</param>
+        /// <param name="userBean">ユーザー情報</param>
         /// <returns>成功／失敗</returns>
-        public bool SetVolume(Dictionary<EnumSystemConfig, int> configMap)
+        public bool SetVolume(UserBean userBean)
         {
-            return audioMixer.SetVolume(configMap);
+            return audioMixer.SetVolume(userBean);
         }
 
         /// <summary>
@@ -63,11 +65,11 @@ namespace Title.Audio
         /// <summary>
         /// オーディオ情報を保存
         /// </summary>
-        /// <param name="configMap">システム設定</param>
+        /// <param name="userBean">ユーザー情報</param>
         /// <returns>成功／失敗</returns>
-        public bool SaveAudios(Dictionary<EnumSystemConfig, int> configMap)
+        public bool SaveAudios(UserBean userBean)
         {
-            return audioMixer.SaveAudios(configMap);
+            return audioMixer.SaveAudios(userBean);
         }
 
         /// <summary>
@@ -78,11 +80,14 @@ namespace Title.Audio
         {
             try
             {
-                var tTResources = new TitleTemplateResourcesAccessory();
-                var datas = tTResources.LoadResourcesCSV(ConstResorcesNames.SYSTEM_CONFIG);
-                var configMap = tTResources.GetSystemConfig(datas);
-                if (!tTResources.SaveDatasCSVOfSystemConfig(ConstResorcesNames.SYSTEM_CONFIG, configMap))
-                    Debug.LogError("CSV保存呼び出しの失敗");
+                var temp = new TemplateResourcesAccessory();
+                var bean = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
+                var beanDefault = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, EnumLoadMode.Default);
+                var beanUpdate = temp.UpdateAudioAndVibration(bean, beanDefault);
+                if (beanUpdate == null)
+                    throw new System.Exception("システム設定データ更新の失敗");
+                if (!temp.SaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, beanUpdate))
+                    throw new System.Exception("CSV保存呼び出しの失敗");
 
                 return true;
             }

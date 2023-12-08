@@ -32,12 +32,22 @@ namespace Main.Audio
 
         public void PlaySFX(ClipToPlay clipToPlay)
         {
-            sfxPlayer.PlaySFX(clipToPlay);
+            sfxPlayer.PlaySFX(clipToPlay, false);
+        }
+
+        public void PlaySFX(ClipToPlay clipToPlay, bool isLoopmode)
+        {
+            sfxPlayer.PlaySFX(clipToPlay, isLoopmode);
         }
 
         public void PlayBGM(ClipToPlayBGM clipToPlay)
         {
             bgmPlayer.PlayBGM(clipToPlay);
+        }
+
+        public void StopSFX(ClipToPlay clipToPlay)
+        {
+            sfxPlayer.StopSFX(clipToPlay);
         }
 
         /// <summary>
@@ -60,6 +70,17 @@ namespace Main.Audio
         /// </summary>
         /// <param name="clipToPlay">SE</param>
         public void PlaySFX(ClipToPlay clipToPlay) { }
+        /// <summary>
+        /// 指定されたSEを再生する
+        /// </summary>
+        /// <param name="clipToPlay">SE</param>
+        /// <param name="isLoopmode">ループモード</param>
+        public void PlaySFX(ClipToPlay clipToPlay, bool isLoopmode) { }
+        /// <summary>
+        /// 指定されたSEを停止する
+        /// </summary>
+        /// <param name="clipToPlay">SE</param>
+        public void StopSFX(ClipToPlay clipToPlay) { }
     }
 
     /// <summary>
@@ -97,6 +118,11 @@ namespace Main.Audio
         /// </summary>
         /// <param name="clipToPlay">BGM</param>
         public void PlayBGM(ClipToPlayBGM clipToPlay) { }
+        /// <summary>
+        /// BGMを再生
+        /// ※ステージ開始時に呼ばれる
+        /// </summary>
+        public void OnStartAndPlayBGM();
     }
 
     /// <summary>

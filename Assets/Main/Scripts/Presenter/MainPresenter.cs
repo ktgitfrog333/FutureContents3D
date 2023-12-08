@@ -117,6 +117,8 @@ namespace Main.Presenter
 
         public void OnStart()
         {
+            var common = new MainPresenterCommon();
+
             // 初期設定
             pauseView.gameObject.SetActive(false);
             gameProceedButtonView.gameObject.SetActive(false);
@@ -190,6 +192,8 @@ namespace Main.Presenter
                         }
                         pauseView.gameObject.SetActive(true);
                         gamePauseModel.SetSelectedGameObject();
+                        if (!playerModel.SetInputBan(true))
+                            Debug.LogError("操作禁止フラグをセット呼び出しの失敗");
                     }
                 });
             // ポーズ画面表示中の操作
@@ -221,6 +225,8 @@ namespace Main.Presenter
                                 .Subscribe(_ =>
                                 {
                                     pauseView.gameObject.SetActive(false);
+                                    if (!playerModel.SetInputBan(false))
+                                        Debug.LogError("操作禁止フラグをセット呼び出しの失敗");
                                 })
                                 .AddTo(gameObject);
                             break;
@@ -230,8 +236,7 @@ namespace Main.Presenter
                     }
                 });
             // クリア画面表示のため、ゴール到達のフラグ更新
-            var currentStageDic = MainGameManager.Instance.SceneOwner.GetSystemCommonCash();
-            var mainSceneStagesState = MainGameManager.Instance.SceneOwner.GetMainSceneStagesState();
+            var datas = MainGameManager.Instance.SceneOwner.GetSaveDatas();
             var isGoalReached = new BoolReactiveProperty();
             isGoalReached.ObserveEveryValueChanged(x => x.Value)
                 .Subscribe(async x =>
@@ -240,27 +245,40 @@ namespace Main.Presenter
                     {
                         MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.me_game_clear);
                         // クリア済みデータの更新
-                        mainSceneStagesState[currentStageDic[EnumSystemCommonCash.SceneId]][EnumMainSceneStagesState.State] = 2;
-                        if (currentStageDic[EnumSystemCommonCash.SceneId] < mainSceneStagesState.Length - 1)
-                            mainSceneStagesState[(currentStageDic[EnumSystemCommonCash.SceneId] + 1)][EnumMainSceneStagesState.State] = 1;
-                        if (!MainGameManager.Instance.SceneOwner.SaveMainSceneStagesState(mainSceneStagesState))
+                        datas.state[datas.sceneId - 1] = 2;
+                        if (datas.sceneId < datas.state.Length - 1 &&
+                            datas.state[(datas.sceneId)] < 1)
+                            datas.state[(datas.sceneId)] = 1;
+                        if (!MainGameManager.Instance.SceneOwner.SetSaveDatas(datas))
                             Debug.LogError("クリア済みデータ保存呼び出しの失敗");
                         // 初期処理
                         clearView.gameObject.SetActive(true);
+                        if (common.IsFinalLevel())
+                            if (!stageClearView.SetMessageCongratulations())
+                                Debug.LogError("最終ステージ用のメッセージをセット呼び出しの失敗");
                         stageClearView.gameObject.SetActive(true);
                         gameProceedButtonView.gameObject.SetActive(false);
                         gameRetryButtonView.gameObject.SetActive(false);
                         gameSelectButtonView.gameObject.SetActive(false);
                         // 一定時間後に表示するUI
                         await Task.Delay(clearContentsRenderingDelayTime);
-                        gameProceedButtonView.gameObject.SetActive(true);
                         // 初回のみ最初から拡大表示
-                        gameProceedButtonView.SetScale();
+                        if (!common.IsFinalLevel())
+                        {
+                            gameProceedButtonView.gameObject.SetActive(true);
+                            gameProceedButtonView.SetScale();
+                            gameProceedButtonModel.SetSelectedGameObject();
+                        }
+                        else
+                        {
+                            if (!cursorIconView.SetSelect(gameRetryButtonView.transform.position))
+                                Debug.LogError("カーソル配置位置の変更呼び出しの失敗");
+                            gameRetryButtonView.SetScale();
+                            gameRetryButtonModel.SetSelectedGameObject();
+                        }
                         gameRetryButtonView.gameObject.SetActive(true);
                         gameSelectButtonView.gameObject.SetActive(true);
                         cursorIconView.gameObject.SetActive(true);
-                        // 初回のみ最初から選択状態
-                        gameProceedButtonModel.SetSelectedGameObject();
                     }
                 });
 
@@ -290,8 +308,11 @@ namespace Main.Presenter
                                 Debug.LogError("ボタン有効／無効切り替え呼び出しの失敗");
                             if (!gameProceedButtonModel.SetEventTriggerEnabled(false))
                                 Debug.LogError("イベント有効／無効切り替え呼び出しの失敗");
+                            // プレイヤーの挙動によって発生するイベント無効　など
+                            if (!MainGameManager.Instance.InputSystemsOwner.Exit())
+                                Debug.LogError("InputSystem終了呼び出しの失敗");
                             var owner = MainGameManager.Instance.SceneOwner;
-                            if (!owner.SetSystemCommonCash(owner.CountUpSceneId(currentStageDic)))
+                            if (!owner.SetSaveDatas(owner.CountUpSceneId(datas)))
                                 Debug.LogError("シーンID更新呼び出しの失敗");
                             // シーン読み込み時のアニメーション
                             Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
@@ -327,11 +348,14 @@ namespace Main.Presenter
                                 Debug.LogError("デフォルトサイズへ変更呼び出しの失敗");
                             break;
                         case EnumEventCommand.Submited:
-                            MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_retry);
+                            MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
                             if (!gameRetryButtonModel.SetButtonEnabled(false))
                                 Debug.LogError("ボタン有効／無効切り替え呼び出しの失敗");
                             if (!gameRetryButtonModel.SetEventTriggerEnabled(false))
                                 Debug.LogError("イベント有効／無効切り替え呼び出しの失敗");
+                            // プレイヤーの挙動によって発生するイベント無効　など
+                            if (!MainGameManager.Instance.InputSystemsOwner.Exit())
+                                Debug.LogError("InputSystem終了呼び出しの失敗");
                             // シーン読み込み時のアニメーション
                             Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
                                 .Subscribe(_ => MainGameManager.Instance.SceneOwner.LoadMainScene())
@@ -371,6 +395,9 @@ namespace Main.Presenter
                                 Debug.LogError("ボタン有効／無効切り替え呼び出しの失敗");
                             if (!gameSelectButtonModel.SetEventTriggerEnabled(false))
                                 Debug.LogError("イベント有効／無効切り替え呼び出しの失敗");
+                            // プレイヤーの挙動によって発生するイベント無効　など
+                            if (!MainGameManager.Instance.InputSystemsOwner.Exit())
+                                Debug.LogError("InputSystem終了呼び出しの失敗");
                             // シーン読み込み時のアニメーション
                             Observable.FromCoroutine<bool>(observer => fadeImageView.PlayFadeAnimation(observer, EnumFadeState.Close))
                                 .Subscribe(_ => MainGameManager.Instance.SceneOwner.LoadSelectScene())
@@ -424,7 +451,7 @@ namespace Main.Presenter
                             switch (inProcess)
                             {
                                 case EnumShortcuActionMode.UndoAction:
-                                    MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_retry);
+                                    MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
                                     // チュートリアルUIを開いていたら閉じる
                                     if (moveGuideView.isActiveAndEnabled)
                                         // 移動操作クローズのアニメーション
@@ -439,7 +466,7 @@ namespace Main.Presenter
                                     if (playerModel != null)
                                         if (!playerModel.SetInputBan(true))
                                             Debug.LogError("操作禁止フラグ更新呼び出しの失敗");
-                                    // T.B.D プレイヤーの挙動によって発生するイベント無効　など
+                                    // プレイヤーの挙動によって発生するイベント無効　など
                                     if (!MainGameManager.Instance.InputSystemsOwner.Exit())
                                         Debug.LogError("InputSystem終了呼び出しの失敗");
                                     // シーン読み込み時のアニメーション
@@ -463,7 +490,7 @@ namespace Main.Presenter
                                     if (playerModel != null)
                                         if (!playerModel.SetInputBan(true))
                                             Debug.LogError("操作禁止フラグ更新呼び出しの失敗");
-                                    // T.B.D プレイヤーの挙動によって発生するイベント無効　など
+                                    // プレイヤーの挙動によって発生するイベント無効　など
                                     if (!MainGameManager.Instance.InputSystemsOwner.Exit())
                                         Debug.LogError("InputSystem終了呼び出しの失敗");
                                     // シーン読み込み時のアニメーション
@@ -473,11 +500,13 @@ namespace Main.Presenter
                                     break;
                                 case EnumShortcuActionMode.CheckAction:
                                     // 遊び方の確認を開く
-                                    MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_play_open);
+                                    MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
                                     gameManualScrollView.gameObject.SetActive(true);
                                     if (!gameManualScrollView.SetPage(EnumGameManualPagesIndex.Page_1))
                                         Debug.LogError("ページ変更呼び出しの失敗");
                                     gameManualViewPageModels[(int)EnumGameManualPagesIndex.Page_1].SetSelectedGameObject();
+                                    if (!playerModel.SetInputBan(true))
+                                        Debug.LogError("操作禁止フラグをセット呼び出しの失敗");
                                     break;
                                 default:
                                     Debug.LogWarning("例外ケース");
@@ -521,6 +550,8 @@ namespace Main.Presenter
                                     {
                                         gameManualScrollView.gameObject.SetActive(false);
                                         inProcess = EnumShortcuActionMode.None;
+                                        if (!playerModel.SetInputBan(false))
+                                            Debug.LogError("操作禁止フラグをセット呼び出しの失敗");
                                     })
                                     .AddTo(gameObject);
                                 break;
@@ -596,7 +627,12 @@ namespace Main.Presenter
                         safeZoneModel.IsTriggerExited.ObserveEveryValueChanged(x => x.Value)
                             .Subscribe(x =>
                             {
-                                if (x)
+                                if (x &&
+                                MainGameManager.Instance != null &&
+                                moveGuideView != null &&
+                                jumpGuideView != null &&
+                                playerModel != null &&
+                                fadeImageView != null)
                                 {
                                     MainGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_player_fall);
                                     // チュートリアルUIを開いていたら閉じる
@@ -610,9 +646,8 @@ namespace Main.Presenter
                                         Observable.FromCoroutine<bool>(observer => jumpGuideView.PlayFadeAnimation(observer, EnumFadeState.Close))
                                             .Subscribe(_ => jumpGuideView.gameObject.SetActive(false))
                                             .AddTo(gameObject);
-                                    if (playerModel != null)
-                                        if (!playerModel.SetInputBan(true))
-                                            Debug.LogError("操作禁止フラグ更新呼び出しの失敗");
+                                    if (!playerModel.SetInputBan(true))
+                                        Debug.LogError("操作禁止フラグ更新呼び出しの失敗");
                                     // T.B.D プレイヤーの挙動によって発生するイベント無効　など
                                     if (!MainGameManager.Instance.InputSystemsOwner.Exit())
                                         Debug.LogError("InputSystem終了呼び出しの失敗");

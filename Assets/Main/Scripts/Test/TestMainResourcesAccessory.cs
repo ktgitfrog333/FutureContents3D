@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Main.Template;
+using Universal.Template;
 using Main.Common;
 
 namespace Main.Test
@@ -17,7 +17,7 @@ namespace Main.Test
 
         private void Start()
         {
-            new MainTemplateResourcesAccessory();
+            // new MainTemplateResourcesAccessory();
         }
 
         public void OnClicked()
@@ -28,28 +28,28 @@ namespace Main.Test
 
         public void TestCase_1()
         {
-            Debug.Log("---OnClicked---");
-            var tSResources = new MainTemplateResourcesAccessory();
-            Debug.Log("---LoadResourcesCSV---");
-            var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CONFIG);
-            if (datas == null)
-                throw new System.Exception("リソース読み込みの失敗");
-            for (var i = 0; i < datas.Count; i++)
-            {
-                for (var j = 0; j < datas[i].Length; j++)
-                {
-                    Debug.Log(datas[i][j]);
-                }
-            }
-            Debug.Log("---GetMainSceneStagesConfig---");
-            var configMaps = tSResources.GetMainSceneStagesConfig(datas);
-            for (var i = 0; i < configMaps.Length; i++)
-            {
-                foreach (var map in configMaps[i])
-                {
-                    Debug.Log($"Idx:[{i}]Key:[{map.Key}]_Val:[{map.Value}]");
-                }
-            }
+            // Debug.Log("---OnClicked---");
+            // var tSResources = new MainTemplateResourcesAccessory();
+            // Debug.Log("---LoadResourcesCSV---");
+            // var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CONFIG);
+            // if (datas == null)
+            //     throw new System.Exception("リソース読み込みの失敗");
+            // for (var i = 0; i < datas.Count; i++)
+            // {
+            //     for (var j = 0; j < datas[i].Length; j++)
+            //     {
+            //         Debug.Log(datas[i][j]);
+            //     }
+            // }
+            // Debug.Log("---GetMainSceneStagesConfig---");
+            // var configMaps = tSResources.GetMainSceneStagesConfig(datas);
+            // for (var i = 0; i < configMaps.Length; i++)
+            // {
+            //     foreach (var map in configMaps[i])
+            //     {
+            //         Debug.Log($"Idx:[{i}]Key:[{map.Key}]_Val:[{map.Value}]");
+            //     }
+            // }
         }
     }
 }

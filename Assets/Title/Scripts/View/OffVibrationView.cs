@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using Title.Common;
-using Title.Template;
+using Universal.Template;
+using Universal.Common;
 
 namespace Title.View
 {
@@ -27,10 +28,9 @@ namespace Title.View
 
         private void OnEnable()
         {
-            var tTResources = new TitleTemplateResourcesAccessory();
-            var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
-            var configMap = tTResources.GetSystemConfig(datas);
-            var color = new Color(image.color.r, image.color.g, image.color.b, configMap[EnumSystemConfig.VibrationEnableIndex] == (int)EnumVibrationEnableState.OFF ? 1f : 0f);
+            var temp = new TemplateResourcesAccessory();
+            var datas = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
+            var color = new Color(image.color.r, image.color.g, image.color.b, datas.vibrationEnableIndex == (int)EnumVibrationEnableState.OFF ? 1f : 0f);
             image.color = color;
         }
 

@@ -1,4 +1,6 @@
-using Main.Template;
+using Universal.Template;
+using Universal.Common;
+using Universal.Bean;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +21,10 @@ namespace Main.Common
         private readonly BoolReactiveProperty _isInstanced = new BoolReactiveProperty();
         /// <summary>レベルがインスタンス済みか</summary>
         public IReactiveProperty<bool> IsInstanced => _isInstanced;
+        /// <summary>インスタンス済みレベル</summary>
+        private Transform _instancedLevel;
+        /// <summary>インスタンス済みレベル</summary>
+        public Transform InstancedLevel => _instancedLevel;
 
         private void Reset()
         {
@@ -38,13 +44,12 @@ namespace Main.Common
                 }
             }
             // シーンIDを取得してステージをLevelオブジェクトの子要素としてインスタンスする
-            var tResourcesAccessory = new MainTemplateResourcesAccessory();
+            var temp = new TemplateResourcesAccessory();
             // ステージIDの取得
-            var sysComCashResources = tResourcesAccessory.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
-            var sysComCash = tResourcesAccessory.GetSystemCommonCash(sysComCashResources);
+            var datas = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
 
-            var g = Instantiate(levelPrefabs[sysComCash[EnumSystemCommonCash.SceneId]], Vector3.zero, Quaternion.identity, level);
-            if (g != null)
+            _instancedLevel = Instantiate(levelPrefabs[datas.sceneId], Vector3.zero, Quaternion.identity, level).transform;
+            if (_instancedLevel != null)
                 _isInstanced.Value = true;
         }
     }

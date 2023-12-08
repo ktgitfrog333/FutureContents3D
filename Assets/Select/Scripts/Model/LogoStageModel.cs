@@ -34,10 +34,6 @@ namespace Select.Model
                 return _index;
             }
         }
-        /// <summary>ボタン</summary>
-        private Button _button;
-        /// <summary>イベントトリガー</summary>
-        private EventTrigger _eventTrigger;
         /// <summary>ステージの状態</summary>
         private readonly IntReactiveProperty stageState = new IntReactiveProperty();
         /// <summary>ステージの状態</summary>
@@ -56,8 +52,8 @@ namespace Select.Model
         {
             try
             {
-                var mainSceneStagesState = SelectGameManager.Instance.SceneOwner.GetMainSceneStagesState();
-                stageState.Value = mainSceneStagesState[Index][EnumMainSceneStagesState.State];
+                var mainSceneStagesState = SelectGameManager.Instance.SceneOwner.GetSaveDatas();
+                stageState.Value = mainSceneStagesState.state[Index - 1];
                 // 未クリアの場合次のステージへナビゲーションしない
                 if (stageState.Value != 2)
                 {

@@ -7,8 +7,10 @@ using Title.Model;
 using Title.View;
 using Title.Common;
 using Title.Audio;
-using Title.Template;
+using Universal.Template;
 using System.Linq;
+using Universal.Bean;
+using Universal.Common;
 
 namespace Title.Presenter
 {
@@ -461,10 +463,9 @@ namespace Title.Presenter
                     }
                 });
             // オプション機能
-            var tTResources = new TitleTemplateResourcesAccessory();
-            var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
-            var configMap = tTResources.GetSystemConfig(datas);
-            var configMapDefault = new Dictionary<EnumSystemConfig, int>(configMap);
+            var temp = new TemplateResourcesAccessory();
+            var datas = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
+            var datasDefault = new UserBean(datas);
 
             // BGMスライダー
             sliderBgmModel.EventState.ObserveEveryValueChanged(x => x.Value)
@@ -524,8 +525,8 @@ namespace Title.Presenter
                                 TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
                                 if (!sliderBgmModel.SetIndex(tmpIdx))
                                     Debug.LogError("インデックス番号をセット処理呼び出しの失敗");
-                                configMap[EnumSystemConfig.BGMVolumeIndex] = tmpIdx;
-                                if (!TitleGameManager.Instance.AudioOwner.SetVolume(configMap))
+                                datas.bgmVolumeIndex = tmpIdx;
+                                if (!TitleGameManager.Instance.AudioOwner.SetVolume(datas))
                                     Debug.LogError("ボリュームセット処理呼び出しの失敗");
                                 if (!bgmView.PlayFadeAnimation(EnumOptionContentState.Selected))
                                     Debug.LogError("フェードアニメーション呼び出しの失敗");
@@ -605,8 +606,8 @@ namespace Title.Presenter
                                 TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
                                 if (!sliderSeModel.SetIndex(tmpIdx))
                                     Debug.LogError("インデックス番号をセット処理呼び出しの失敗");
-                                configMap[EnumSystemConfig.SEVolumeIndex] = tmpIdx;
-                                if (!TitleGameManager.Instance.AudioOwner.SetVolume(configMap))
+                                datas.seVolumeIndex = tmpIdx;
+                                if (!TitleGameManager.Instance.AudioOwner.SetVolume(datas))
                                     Debug.LogError("ボリュームセット処理呼び出しの失敗");
                                 if (!seView.PlayFadeAnimation(EnumOptionContentState.Selected))
                                     Debug.LogError("フェードアニメーション呼び出しの失敗");
@@ -692,11 +693,11 @@ namespace Title.Presenter
                         case EnumEventCommand.Selected:
                             // 選択SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
-                            if (configMap[EnumSystemConfig.VibrationEnableIndex] != (int)EnumVibrationEnableState.ON)
+                            if (datas.vibrationEnableIndex != (int)EnumVibrationEnableState.ON)
                                 if (!TitleGameManager.Instance.InputSystemsOwner.PlayVibration())
                                     Debug.LogError("振動の再生処理呼び出しの失敗");
-                            configMap[EnumSystemConfig.VibrationEnableIndex] = (int)EnumVibrationEnableState.ON;
-                            if (!radioVibrationModel.SetVibrationState(configMap[EnumSystemConfig.VibrationEnableIndex]))
+                            datas.vibrationEnableIndex = (int)EnumVibrationEnableState.ON;
+                            if (!radioVibrationModel.SetVibrationState(datas.vibrationEnableIndex))
                                 Debug.LogError("振動状態セット呼び出しの失敗");
                             if (!vibrationView.PlayFadeAnimation(EnumOptionContentState.Selected))
                                 Debug.LogError("フェードアニメーション呼び出しの失敗");
@@ -729,8 +730,8 @@ namespace Title.Presenter
                         case EnumEventCommand.Selected:
                             // 選択SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_select);
-                            configMap[EnumSystemConfig.VibrationEnableIndex] = (int)EnumVibrationEnableState.OFF;
-                            if (!radioVibrationModel.SetVibrationState(configMap[EnumSystemConfig.VibrationEnableIndex]))
+                            datas.vibrationEnableIndex = (int)EnumVibrationEnableState.OFF;
+                            if (!radioVibrationModel.SetVibrationState(datas.vibrationEnableIndex))
                                 Debug.LogError("振動状態セット呼び出しの失敗");
                             if (!vibrationView.PlayFadeAnimation(EnumOptionContentState.Selected))
                                 Debug.LogError("フェードアニメーション呼び出しの失敗");
@@ -844,14 +845,13 @@ namespace Title.Presenter
                                 if (!TitleGameManager.Instance.AudioOwner.ReLoadAudios())
                                     Debug.LogError("オーディオ情報リロード呼び出しの失敗");
                                 // モデルへの反映
-                                datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
-                                configMap = tTResources.GetSystemConfig(datas);
-                                configMapDefault = new Dictionary<EnumSystemConfig, int>(configMap);
-                                if (!sliderBgmModel.SetIndex(configMap[EnumSystemConfig.BGMVolumeIndex]))
+                                datas = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
+                                datasDefault = new UserBean(datas);
+                                if (!sliderBgmModel.SetIndex(datas.bgmVolumeIndex))
                                     Debug.LogError("インデックス番号をセット処理呼び出しの失敗");
-                                if (!sliderSeModel.SetIndex(configMap[EnumSystemConfig.SEVolumeIndex]))
+                                if (!sliderSeModel.SetIndex(datas.seVolumeIndex))
                                     Debug.LogError("インデックス番号をセット処理呼び出しの失敗");
-                                if (!radioVibrationModel.SetVibrationState(configMap[EnumSystemConfig.VibrationEnableIndex]))
+                                if (!radioVibrationModel.SetVibrationState(datas.vibrationEnableIndex))
                                     Debug.LogError("振動状態セット呼び出しの失敗");
                                 // メッセージ表示アニメーション
                                 Observable.FromCoroutine<bool>(observer => resetConfigMessageView.PlayBoundAnimation(observer))
@@ -953,9 +953,10 @@ namespace Title.Presenter
                             // 決定SEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
                             // 現在の設定を保存
-                            configMapDefault = new Dictionary<EnumSystemConfig, int>(configMap);
-                            if (!tTResources.SaveDatasCSVOfSystemConfig(ConstResorcesNames.SYSTEM_CONFIG, configMap))
-                                Debug.LogError("システムオプション設定をCSVデータへ保存呼び出しの失敗");
+                            datasDefault = new UserBean(datas);
+                            // 最後の設定を再読み込み
+                            if (!TitleGameManager.Instance.AudioOwner.SaveAudios(datas))
+                                Debug.LogError("オーディオ情報リロード呼び出しの失敗");
                             // オプション設定を閉じる
                             option.SetActive(false);
                             // ゲーム開始／オプション／ゲーム終了ボタンを表示
@@ -1001,7 +1002,7 @@ namespace Title.Presenter
                             // キャンセルSEを再生
                             TitleGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_cancel);
                             // ファイル読み込み時の状態へ戻す
-                            configMap = configMapDefault;
+                            datas = datasDefault;
                             // 最後の設定を再読み込み
                             if (!TitleGameManager.Instance.AudioOwner.ReLoadAudios())
                                 Debug.LogError("オーディオ情報リロード呼び出しの失敗");
