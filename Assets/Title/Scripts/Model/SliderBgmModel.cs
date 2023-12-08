@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Title.Template;
+using Universal.Template;
 using Title.Common;
+using Title.Template;
 using UniRx;
+using Universal.Common;
 
 namespace Title.Model
 {
@@ -29,11 +31,9 @@ namespace Title.Model
         protected override void OnEnable()
         {
             base.OnEnable();
-            var tTResources = new TitleTemplateResourcesAccessory();
-            //tTResources.Initialize();
-            var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
-            var configMap = tTResources.GetSystemConfig(datas);
-            _index.Value = configMap[EnumSystemConfig.BGMVolumeIndex];
+            var tTResources = new TemplateResourcesAccessory();
+            var datas = tTResources.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
+            _index.Value = datas.bgmVolumeIndex;
         }
 
         /// <summary>

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Title.Common;
-using Title.Template;
+using Universal.Template;
 
 namespace Title.Model
 {

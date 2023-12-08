@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Title.Template;
+using Universal.Template;
+using Universal.Common;
+using Universal.Bean;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,7 +18,7 @@ namespace Title.Common
 
         public void OnStart()
         {
-            new TitleTemplateResourcesAccessory();
+            new TemplateResourcesAccessory();
         }
 
         /// <summary>
@@ -27,17 +29,14 @@ namespace Title.Common
         {
             try
             {
-                var tTResources = new TitleTemplateResourcesAccessory();
-                // ステージクリア済みデータのリセット
-                var mainSceneStagesStateDatas = tTResources.LoadResourcesCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
-                var mainSceneStagesStateConfigMaps = tTResources.GetMainSceneStagesState(mainSceneStagesStateDatas);
-                if (!tTResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, mainSceneStagesStateConfigMaps))
-                    Debug.LogError("CSV保存呼び出しの失敗");
-                // システム設定キャッシュのリセット
-                var systemCommonCashDatas = tTResources.LoadResourcesCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
-                var systemCommonCashConfigMaps = tTResources.GetSystemCommonCash(systemCommonCashDatas);
-                if (!tTResources.SaveDatasCSVOfSystemCommonCash(ConstResorcesNames.SYSTEM_COMMON_CASH, systemCommonCashConfigMaps))
-                    Debug.LogError("CSV保存呼び出しの失敗");
+                var temp = new TemplateResourcesAccessory();
+                var bean = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
+                var beanDefault = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, EnumLoadMode.Default);
+                var beanUpdate = temp.UpdateSceneStates(bean, beanDefault);
+                if (beanUpdate == null)
+                    throw new System.Exception("シーン更新の失敗");
+                if (!temp.SaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, beanUpdate))
+                    throw new System.Exception("Json保存呼び出しの失敗");
 
                 return true;
             }
@@ -56,17 +55,14 @@ namespace Title.Common
         {
             try
             {
-                var tTResources = new TitleTemplateResourcesAccessory();
-                // ステージクリア済みデータのリセット
-                var mainSceneStagesStateDatas = tTResources.LoadResourcesCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE_ALL);
-                var mainSceneStagesStateConfigMaps = tTResources.GetMainSceneStagesState(mainSceneStagesStateDatas);
-                if (!tTResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, mainSceneStagesStateConfigMaps))
-                    Debug.LogError("CSV保存呼び出しの失敗");
-                // システム設定キャッシュのリセット
-                var systemCommonCashDatas = tTResources.LoadResourcesCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
-                var systemCommonCashConfigMaps = tTResources.GetSystemCommonCash(systemCommonCashDatas);
-                if (!tTResources.SaveDatasCSVOfSystemCommonCash(ConstResorcesNames.SYSTEM_COMMON_CASH, systemCommonCashConfigMaps))
-                    Debug.LogError("CSV保存呼び出しの失敗");
+                var temp = new TemplateResourcesAccessory();
+                var bean = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
+                var beanAll = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, EnumLoadMode.All);
+                var beanUpdate = temp.UpdateSceneStates(bean, beanAll);
+                if (beanUpdate == null)
+                    throw new System.Exception("シーン更新の失敗");
+                if (!temp.SaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, beanUpdate))
+                    throw new System.Exception("Json保存呼び出しの失敗");
 
                 return true;
             }

@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Title.Common;
-using Title.Template;
+using Universal.Template;
 using Title.Audio;
+using Title.Template;
+using Universal.Bean;
+using Universal.Common;
 
 namespace Title.Test
 {
@@ -16,15 +19,14 @@ namespace Title.Test
     {
         //[SerializeField] private Slider slider;
         [SerializeField] private TestAudioMode mode;
-        private Dictionary<EnumSystemConfig, int> configMap = new Dictionary<EnumSystemConfig, int>();
+        private UserBean bean = new UserBean();
 
         private void Start()
         {
             TitleGameManager.Instance.AudioOwner.PlayBGM(ClipToPlayBGM.bgm_title);
             //slider.onValueChanged.AddListener(SetAudioMixer);
-            var tTResources = new TitleTemplateResourcesAccessory();
-            var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
-            configMap = tTResources.GetSystemConfig(datas);
+            var tTResources = new TemplateResourcesAccessory();
+            bean = tTResources.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
         }
 
         public void SetAudioMixer(float value)
@@ -32,15 +34,15 @@ namespace Title.Test
             switch (mode)
             {
                 case TestAudioMode.BGM:
-                    configMap[EnumSystemConfig.BGMVolumeIndex] = (int)value;
+                    bean.bgmVolumeIndex = (int)value;
                     break;
                 case TestAudioMode.SE:
-                    configMap[EnumSystemConfig.SEVolumeIndex] = (int)value;
+                    bean.seVolumeIndex = (int)value;
                     break;
                 default:
                     break;
             }
-            if (!TitleGameManager.Instance.AudioOwner.SetVolume(configMap))
+            if (!TitleGameManager.Instance.AudioOwner.SetVolume(bean))
                 Debug.LogError("ボリューム調整呼び出しの失敗");
         }
 
@@ -52,7 +54,7 @@ namespace Title.Test
 
         public void OnClickSubmit()
         {
-            if (!TitleGameManager.Instance.AudioOwner.SaveAudios(configMap))
+            if (!TitleGameManager.Instance.AudioOwner.SaveAudios(bean))
                 Debug.LogError("オーディオ設定保存呼び出しの失敗");
         }
 

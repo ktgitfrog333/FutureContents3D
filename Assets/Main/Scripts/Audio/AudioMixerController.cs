@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using Main.Common;
-using Main.Template;
+using Universal.Template;
+using Universal.Common;
 
 namespace Main.Audio
 {
@@ -20,12 +21,11 @@ namespace Main.Audio
 
         public void OnStart()
         {
-            var tMResources = new MainTemplateResourcesAccessory();
-            var datas = tMResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
-            var configMap = tMResources.GetSystemConfig(datas);
-            if (!OutPutAudios(configMap[EnumSystemConfig.BGMVolumeIndex], ConstAudioMixerGroupsNames.GROUP_NAME_BGM))
+            var temp = new TemplateResourcesAccessory();
+            var datas = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
+            if (!OutPutAudios(datas.bgmVolumeIndex, ConstAudioMixerGroupsNames.GROUP_NAME_BGM))
                 Debug.LogError($"{ConstAudioMixerGroupsNames.GROUP_NAME_BGM}設定呼び出しの失敗");
-            if (!OutPutAudios(configMap[EnumSystemConfig.SEVolumeIndex], ConstAudioMixerGroupsNames.GROUP_NAME_SE))
+            if (!OutPutAudios(datas.seVolumeIndex, ConstAudioMixerGroupsNames.GROUP_NAME_SE))
                 Debug.LogError($"{ConstAudioMixerGroupsNames.GROUP_NAME_SE}設定呼び出しの失敗");
         }
 

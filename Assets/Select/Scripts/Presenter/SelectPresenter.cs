@@ -135,8 +135,8 @@ namespace Select.Presenter
                 .AddTo(gameObject);
 
             // ステージ番号を取得する処理を追加する
-            var sysCommonCash = SelectGameManager.Instance.SceneOwner.GetSystemCommonCash();
-            var stageIndex = new IntReactiveProperty(sysCommonCash[EnumSystemCommonCash.SceneId]);
+            var saveDatas = SelectGameManager.Instance.SceneOwner.GetSaveDatas();
+            var stageIndex = new IntReactiveProperty(saveDatas.sceneId);
             logoStageModels[stageIndex.Value].SetSelectedGameObject();
             // クリア済みマークの表示
             for (var i = 0; i < logoStageModels.Length; i++)
@@ -264,8 +264,8 @@ namespace Select.Presenter
                                 // 決定SEを再生
                                 SelectGameManager.Instance.AudioOwner.PlaySFX(ClipToPlay.se_decided);
                                 // メインシーンへの遷移
-                                sysCommonCash[EnumSystemCommonCash.SceneId] = child.Index;
-                                if (!SelectGameManager.Instance.SceneOwner.SetSystemCommonCash(sysCommonCash))
+                                saveDatas.sceneId = child.Index;
+                                if (!SelectGameManager.Instance.SceneOwner.SetSaveDatas(saveDatas))
                                     Debug.LogError("シーンID更新処理呼び出しの失敗");
                                 // UI操作を許可しない
                                 foreach (var child in logoStageModels)

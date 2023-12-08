@@ -7,7 +7,9 @@ using System;
 using UniRx;
 using UniRx.Triggers;
 using DG.Tweening;
-using Main.Template;
+using Universal.Template;
+using Universal.Common;
+using Universal.Bean;
 
 namespace Main.InputSystem
 {
@@ -97,19 +99,18 @@ namespace Main.InputSystem
             // ゲームパッドの情報をセット
             _gamepad = Gamepad.current;
 
-            var tResourcesAccessory = new MainTemplateResourcesAccessory();
+            var temp = new TemplateResourcesAccessory();
             // ステージ共通設定の取得
-            var mainSceneStagesConfResources = tResourcesAccessory.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
-            var mainSceneStagesConfs = tResourcesAccessory.GetSystemConfig(mainSceneStagesConfResources);
+            var datas = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
 
-            isVibrationEnabled = mainSceneStagesConfs[EnumSystemConfig.VibrationEnableIndex] == 1;
+            isVibrationEnabled = datas.vibrationEnableIndex == 1;
         }
 
         public bool Exit()
         {
             try
             {
-                _inputActions.Disable();
+                _inputActions.Dispose();
                 inputPlayer.DisableAll();
                 inputUI.DisableAll();
                 _compositeDisposable.Clear();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Select.Common;
 using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 namespace Select.Model
@@ -10,7 +11,9 @@ namespace Select.Model
     /// <summary>
     /// イベントコントローラー
     /// </summary>
-    public class UIEventController : MonoBehaviour
+    [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(EventTrigger))]
+    public class UIEventController : MonoBehaviour, IUIEventController
     {
         /// <summary>
         /// 実行イベントの監視
@@ -34,6 +37,12 @@ namespace Select.Model
         public IReactiveProperty<int> EventState => _eventState;
         /// <summary>イベントシステム</summary>
         private EventSystem _eventSystem;
+        /// <summary>ボタン</summary>
+        protected Button _button;
+        /// <summary>ボタン</summary>
+        public Button Button => _button == null ? GetComponent<Button>() : _button;
+        /// <summary>イベントトリガー</summary>
+        protected EventTrigger _eventTrigger;
 
         protected virtual void OnEnable()
         {
@@ -82,5 +91,26 @@ namespace Select.Model
         {
             _eventState.Value = (int)EnumEventCommand.Canceled;
         }
+
+        public void SetDeSelectedGameObject()
+        {
+            _eventSystem.SetSelectedGameObject(null);
+        }
+    }
+
+    /// <summary>
+    /// イベントコントローラー
+    /// インターフェース
+    /// </summary>
+    public interface IUIEventController
+    {
+        /// <summary>
+        /// デフォルト選択切り替え
+        /// </summary>
+        public void SetSelectedGameObject();
+        /// <summary>
+        /// デフォルト非選択切り替え
+        /// </summary>
+        public void SetDeSelectedGameObject();
     }
 }

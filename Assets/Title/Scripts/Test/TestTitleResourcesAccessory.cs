@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Title.Template;
+using Universal.Template;
 using Title.Common;
+using Universal.Bean;
+using Universal.Common;
 
 namespace Title.Test
 {
@@ -19,7 +21,7 @@ namespace Title.Test
 
         private void Start()
         {
-            new TitleTemplateResourcesAccessory();
+            new TemplateResourcesAccessory();
         }
 
         public void OnClicked()
@@ -38,130 +40,121 @@ namespace Title.Test
                 case 3:
                     TestCase_3();
                     break;
+                case 4:
+                    TestCase_4();
+                    break;
+                case 5:
+                    TestCase_5();
+                    break;
+                case 6:
+                    TestCase_6();
+                    break;
+                case 7:
+                    TestCase_7();
+                    break;
                 default:
                     Debug.LogError("例外ケース");
                     break;
             }
         }
 
+        private void TestCase_4()
+        {
+            var temp = new TemplateResourcesAccessory();
+            var bean = new UserBean();
+            Debug.Log(temp.SaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, bean) ? "OK" : "NG");
+        }
+
+        private void TestCase_5()
+        {
+            var temp = new TemplateResourcesAccessory();
+            var bean = new UserBean();
+            bean.sceneId = 2;
+            Debug.Log(temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA).sceneId == bean.sceneId ? "OK" : "NG");
+        }
+
+        private void TestCase_6()
+        {
+            var temp = new TemplateResourcesAccessory();
+            var bean = new UserBean();
+            bean.sceneId = 1;
+            Debug.Log(temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, EnumLoadMode.Default).sceneId == bean.sceneId ? "OK" : "NG");
+        }
+
+        private void TestCase_7()
+        {
+            var temp = new TemplateResourcesAccessory();
+            var bean = new UserBean();
+            bean.sceneId = 1;
+            Debug.Log(temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, EnumLoadMode.All).sceneId == bean.sceneId ? "OK" : "NG");
+        }
+
         private void TestCase_0()
         {
             Debug.Log("---OnClicked---");
-            var tTResources = new TitleTemplateResourcesAccessory();
+            var tTResources = new TemplateResourcesAccessory();
             Debug.Log("---LoadResourcesCSV---");
-            var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
+            var datas = tTResources.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, EnumLoadMode.Default);
             if (datas == null)
                 throw new System.Exception("リソース読み込みの失敗");
-            for (var i = 0; i < datas.Count; i++)
-            {
-                for (var j = 0; j < datas[i].Length; j++)
-                {
-                    Debug.Log(datas[i][j]);
-                }
-            }
-            Debug.Log("---GetSystemConfig---");
-            var configMap = tTResources.GetSystemConfig(datas);
-            foreach (var map in configMap)
-            {
-                Debug.Log($"Key:{map.Key}_Val:{map.Value}");
-            }
+            Debug.Log(datas.audioVolumeIndex);
+            Debug.Log(datas.bgmVolumeIndex);
+            Debug.Log(datas.seVolumeIndex);
+            Debug.Log(datas.vibrationEnableIndex);
             Debug.Log("---SaveResourcesCSVOfSystemConfig---");
             //var configMap = new Dictionary<EnumSystemConfig, int>();
             var idx = 0;
-            configMap[EnumSystemConfig.AudioVolumeIndex] = inputSystemConfig[idx++];
-            configMap[EnumSystemConfig.BGMVolumeIndex] = inputSystemConfig[idx++];
-            configMap[EnumSystemConfig.SEVolumeIndex] = inputSystemConfig[idx++];
-            configMap[EnumSystemConfig.VibrationEnableIndex] = inputSystemConfig[idx++];
-            if (!tTResources.SaveDatasCSVOfSystemConfig(ConstResorcesNames.SYSTEM_CONFIG, configMap))
+            datas.audioVolumeIndex = inputSystemConfig[idx++];
+            datas.bgmVolumeIndex = inputSystemConfig[idx++];
+            datas.seVolumeIndex = inputSystemConfig[idx++];
+            datas.vibrationEnableIndex = inputSystemConfig[idx++];
+            if (!tTResources.SaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, datas))
                 Debug.LogError("CSV保存呼び出しの失敗");
         }
 
         private void TestCase_1()
         {
             Debug.Log("---OnClicked---");
-            var tTResources = new TitleTemplateResourcesAccessory();
+            var tTResources = new TemplateResourcesAccessory();
             Debug.Log("---LoadSaveDatasCSV---");
-            var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
+            var datas = tTResources.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
             if (datas == null)
                 throw new System.Exception("リソース読み込みの失敗");
-            for (var i = 0; i < datas.Count; i++)
+            for (var i = 0; i < datas.state.Length; i++)
             {
-                for (var j = 0; j < datas[i].Length; j++)
-                {
-                    Debug.Log(datas[i][j]);
-                }
-            }
-            Debug.Log("---GetMainSceneStagesCleared---");
-            var configMaps = tTResources.GetMainSceneStagesState(datas);
-            foreach (var configMap in configMaps)
-            {
-                foreach (var map in configMap)
-                {
-                    Debug.Log($"Key:{map.Key}_Val:{map.Value}");
-                }
+                Debug.Log(datas.state[i]);
             }
             Debug.Log("---SaveDatasCSVOfMainSceneStagesCleared---");
-            configMaps[1][EnumMainSceneStagesState.State] = inputMainSceneStagesCleared[1];
-            configMaps[2][EnumMainSceneStagesState.State] = inputMainSceneStagesCleared[2];
-            if (!tTResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, configMaps))
+            datas.state[1] = inputMainSceneStagesCleared[1];
+            datas.state[2] = inputMainSceneStagesCleared[2];
+            if (!tTResources.SaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, datas))
                 Debug.LogError("CSV保存呼び出しの失敗");
         }
 
         private void TestCase_2()
         {
             Debug.Log("---OnClicked---");
-            var tTResources = new TitleTemplateResourcesAccessory();
+            var tTResources = new TemplateResourcesAccessory();
             Debug.Log("---LoadResourcesCSV---");
-            var datas = tTResources.LoadResourcesCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
-            //if (datas == null)
-            //    throw new System.Exception("リソース読み込みの失敗");
-            //for (var i = 0; i < datas.Count; i++)
-            //{
-            //    for (var j = 0; j < datas[i].Length; j++)
-            //    {
-            //        Debug.Log(datas[i][j]);
-            //    }
-            //}
-            Debug.Log("---GetMainSceneStagesCleared---");
-            var configMaps = tTResources.GetMainSceneStagesState(datas);
-            //foreach (var configMap in configMaps)
-            //{
-            //    foreach (var map in configMap)
-            //    {
-            //        Debug.Log($"Key:{map.Key}_Val:{map.Value}");
-            //    }
-            //}
+            var datas = tTResources.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, EnumLoadMode.Default);
             Debug.Log("---SaveDatasCSVOfMainSceneStagesCleared---");
-            if (!tTResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, configMaps))
+            if (!tTResources.SaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, datas))
                 Debug.LogError("CSV保存呼び出しの失敗");
         }
 
         public void TestCase_3()
         {
             Debug.Log("---OnClicked---");
-            var tSResources = new TitleTemplateResourcesAccessory();
+            var tSResources = new TemplateResourcesAccessory();
             Debug.Log("---LoadResourcesCSV---");
-            var datas = tSResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
+            var datas = tSResources.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
             if (datas == null)
                 throw new System.Exception("リソース読み込みの失敗");
-            for (var i = 0; i < datas.Count; i++)
-            {
-                for (var j = 0; j < datas[i].Length; j++)
-                {
-                    Debug.Log(datas[i][j]);
-                }
-            }
-            Debug.Log("---GetSystemCommonCash---");
-            var configMap = tSResources.GetSystemCommonCash(datas);
-            foreach (var map in configMap)
-            {
-                Debug.Log($"Key:{map.Key}_Val:{map.Value}");
-            }
             Debug.Log("---SaveResourcesCSVOfSystemCommonCash---");
             //var configMap = new Dictionary<EnumSystemConfig, int>();
             var idx = 0;
-            configMap[EnumSystemCommonCash.SceneId] = inputSystemCommonCash[idx++];
-            if (!tSResources.SaveDatasCSVOfSystemCommonCash(ConstResorcesNames.SYSTEM_COMMON_CASH, configMap))
+            datas.sceneId = inputSystemCommonCash[idx++];
+            if (!tSResources.SaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, datas))
                 Debug.LogError("CSV保存呼び出しの失敗");
         }
     }

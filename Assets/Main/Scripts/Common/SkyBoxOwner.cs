@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Main.Template;
+using Universal.Template;
+using Universal.Common;
 
 namespace Main.Common
 {
@@ -15,16 +16,14 @@ namespace Main.Common
 
         public void OnStart()
         {
-            var tResourcesAccessory = new MainTemplateResourcesAccessory();
+            var temp = new TemplateResourcesAccessory();
             // ステージIDの取得
-            var sysComCashResources = tResourcesAccessory.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
-            var sysComCash = tResourcesAccessory.GetSystemCommonCash(sysComCashResources);
             // ステージ共通設定の取得
-            var mainSceneStagesConfResources = tResourcesAccessory.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_CONFIG);
-            var mainSceneStagesConfs = tResourcesAccessory.GetMainSceneStagesConfig(mainSceneStagesConfResources);
+            var userDatas = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
+            var adminDatas = temp.LoadSaveDatasJsonOfAdminBean(ConstResorcesNames.ADMIN_DATA);
 
             // Skyboxの設定
-            RenderSettings.skybox = skyboxs[mainSceneStagesConfs[sysComCash[EnumSystemCommonCash.SceneId]][EnumMainSceneStagesConfig.SkyBoxs]];
+            RenderSettings.skybox = skyboxs[adminDatas.skyBoxs[userDatas.sceneId - 1] - 1];
         }
     }
 }

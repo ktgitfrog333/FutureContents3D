@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Title.Common;
 using Title.Template;
+using Universal.Template;
+using Universal.Common;
 using UniRx;
 
 namespace Title.Model
@@ -29,10 +31,9 @@ namespace Title.Model
         protected override void OnEnable()
         {
             base.OnEnable();
-            var tTResources = new TitleTemplateResourcesAccessory();
-            var datas = tTResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_CONFIG);
-            var configMap = tTResources.GetSystemConfig(datas);
-            _vibrationState.Value = configMap[EnumSystemConfig.VibrationEnableIndex];
+            var tTResources = new TemplateResourcesAccessory();
+            var datas = tTResources.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
+            _vibrationState.Value = datas.vibrationEnableIndex;
         }
 
         /// <summary>

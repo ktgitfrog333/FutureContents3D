@@ -1,4 +1,6 @@
-using Main.Template;
+using Universal.Template;
+using Universal.Common;
+using Universal.Bean;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +11,7 @@ namespace Main.Common
     /// <summary>
     /// シーンオーナー
     /// </summary>
-    public class SceneOwner : MonoBehaviour, IMainGameManager
+    public class SceneOwner : MonoBehaviour, IMainGameManager, ISceneOwner
     {
         /// <summary>次のシーン名</summary>
         [SerializeField] private string nextSceneName = "MainScene";
@@ -18,23 +20,23 @@ namespace Main.Common
 
         public void OnStart()
         {
-            new MainTemplateResourcesAccessory();
+            new TemplateResourcesAccessory();
         }
 
         /// <summary>
-        /// シーンIDを取得
+        /// ユーザーデータを取得
         /// </summary>
-        /// <returns>シーンID</returns>
-        public Dictionary<EnumSystemCommonCash, int> GetSystemCommonCash()
+        /// <returns>ユーザーデータ</returns>
+        public UserBean GetSaveDatas()
         {
             try
             {
-                var tMResources = new MainTemplateResourcesAccessory();
-                var datas = tMResources.LoadSaveDatasCSV(ConstResorcesNames.SYSTEM_COMMON_CASH);
+                var temp = new TemplateResourcesAccessory();
+                var datas = temp.LoadSaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA);
                 if (datas == null)
                     throw new System.Exception("リソース読み込みの失敗");
 
-                return tMResources.GetSystemCommonCash(datas);
+                return datas;
             }
             catch (System.Exception e)
             {
@@ -44,39 +46,17 @@ namespace Main.Common
         }
 
         /// <summary>
-        /// ステージクリア済みデータを取得
+        /// シーンIDをインクリメント（次のステージ番号）
         /// </summary>
-        /// <returns>ステージクリア済みデータ</returns>
-        public Dictionary<EnumMainSceneStagesState, int>[] GetMainSceneStagesState()
+        /// <param name="userBean">ユーザーデータ</param>
+        /// <returns>更新後のユーザーデータ</returns>
+        public UserBean CountUpSceneId(UserBean userBean)
         {
             try
             {
-                var tMResources = new MainTemplateResourcesAccessory();
-                var datas = tMResources.LoadSaveDatasCSV(ConstResorcesNames.MAIN_SCENE_STAGES_STATE);
-                if (datas == null)
-                    throw new System.Exception("リソース読み込みの失敗");
-
-                return tMResources.GetMainSceneStagesState(datas);
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError(e);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// シーンIDをカウントアップ（次のステージ番号）
-        /// </summary>
-        /// <param name="configMap">シーンID</param>
-        /// <returns>登録後のシーンID</returns>
-        public Dictionary<EnumSystemCommonCash, int> CountUpSceneId(Dictionary<EnumSystemCommonCash, int> configMap)
-        {
-            try
-            {
-                var registedValue = configMap;
-                var id = registedValue[EnumSystemCommonCash.SceneId];
-                registedValue[EnumSystemCommonCash.SceneId] = ++id;
+                var registedValue = userBean;
+                var id = registedValue.sceneId;
+                registedValue.sceneId = ++id;
 
                 return registedValue;
             }
@@ -88,39 +68,18 @@ namespace Main.Common
         }
 
         /// <summary>
-        /// シーンIDを更新
+        /// ユーザーデータを更新
         /// </summary>
-        /// <param name="configMap">シーン設定</param>
+        /// <param name="userBean">ユーザーデータ</param>
         /// <returns>成功／失敗</returns>
-        public bool SetSystemCommonCash(Dictionary<EnumSystemCommonCash, int> configMap)
+        public bool SetSaveDatas(UserBean userBean)
         {
             try
             {
-                var tMResources = new MainTemplateResourcesAccessory();
-                if (configMap == null)
+                var temp = new TemplateResourcesAccessory();
+                if (userBean == null)
                     throw new System.Exception("設定データがnull");
-                if (!tMResources.SaveDatasCSVOfSystemCommonCash(ConstResorcesNames.SYSTEM_COMMON_CASH, configMap))
-                    Debug.LogError("CSV保存呼び出しの失敗");
-
-                return true;
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError(e);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// ステージクリア済みデータの保存
-        /// </summary>
-        /// <returns>成功／失敗</returns>
-        public bool SaveMainSceneStagesState(Dictionary<EnumMainSceneStagesState, int>[] configMaps)
-        {
-            try
-            {
-                var tMResources = new MainTemplateResourcesAccessory();
-                if (!tMResources.SaveDatasCSVOfMainSceneStagesState(ConstResorcesNames.MAIN_SCENE_STAGES_STATE, configMaps))
+                if (!temp.SaveDatasJsonOfUserBean(ConstResorcesNames.USER_DATA, userBean))
                     Debug.LogError("CSV保存呼び出しの失敗");
 
                 return true;
@@ -147,5 +106,9 @@ namespace Main.Common
         {
             SceneManager.LoadScene(backSceneName);
         }
+    }
+
+    public interface ISceneOwner
+    {
     }
 }
